@@ -1,0 +1,450 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ============================================
+   DESIGN PHILOSOPHY: Laboratório Demoníaco Digital
+   Xianxia Cyberpunk Extremo - Bizarro & Único
+   OTIMIZADO PARA PERFORMANCE
+   ============================================ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+  /* Paleta Demoníaca Extrema */
+  --blood-red: #CC0000;
+  --crimson-dark: #8B0000;
+  --void-black: #0A0E27;
+  --void-darker: #050609;
+  --ghost-purple: #6B1B9A;
+  --demon-purple: #9D4EDD;
+  --spectral-cyan: #00FFFF;
+  --void-cyan: #00D9FF;
+  --hellfire-gold: #FFD700;
+  --corrupted-green: #00FF41;
+  --cursed-pink: #FF00FF;
+
+  --primary: var(--hellfire-gold);
+  --primary-foreground: var(--void-black);
+  --sidebar-primary: var(--blood-red);
+  --sidebar-primary-foreground: var(--void-black);
+  --chart-1: var(--spectral-cyan);
+  --chart-2: var(--hellfire-gold);
+  --chart-3: var(--demon-purple);
+  --chart-4: var(--blood-red);
+  --chart-5: var(--corrupted-green);
+  --radius: 0.65rem;
+  
+  --background: var(--void-black);
+  --foreground: #E8D5FF;
+  --card: var(--void-darker);
+  --card-foreground: #E8D5FF;
+  --popover: var(--void-darker);
+  --popover-foreground: #E8D5FF;
+  --secondary: var(--demon-purple);
+  --secondary-foreground: #E8D5FF;
+  --muted: var(--ghost-purple);
+  --muted-foreground: #B8A8D8;
+  --accent: var(--spectral-cyan);
+  --accent-foreground: var(--void-black);
+  --destructive: var(--blood-red);
+  --destructive-foreground: #FFE8E8;
+  --border: rgba(255, 215, 0, 0.15);
+  --input: rgba(255, 215, 0, 0.08);
+  --ring: var(--spectral-cyan);
+  --sidebar: var(--void-darker);
+  --sidebar-foreground: #E8D5FF;
+  --sidebar-accent: var(--spectral-cyan);
+  --sidebar-accent-foreground: var(--void-black);
+  --sidebar-border: rgba(255, 215, 0, 0.15);
+  --sidebar-ring: var(--spectral-cyan);
+}
+
+.dark {
+  --background: var(--void-black);
+  --foreground: #E8D5FF;
+  --card: var(--void-darker);
+  --card-foreground: #E8D5FF;
+  --popover: var(--void-darker);
+  --popover-foreground: #E8D5FF;
+  --secondary: var(--demon-purple);
+  --secondary-foreground: #E8D5FF;
+  --muted: var(--ghost-purple);
+  --muted-foreground: #B8A8D8;
+  --accent: var(--spectral-cyan);
+  --accent-foreground: var(--void-black);
+  --destructive: var(--blood-red);
+  --destructive-foreground: #FFE8E8;
+  --border: rgba(255, 215, 0, 0.15);
+  --input: rgba(255, 215, 0, 0.08);
+  --ring: var(--spectral-cyan);
+  --sidebar: var(--void-darker);
+  --sidebar-foreground: #E8D5FF;
+  --sidebar-accent: var(--spectral-cyan);
+  --sidebar-accent-foreground: var(--void-black);
+  --sidebar-border: rgba(255, 215, 0, 0.15);
+  --sidebar-ring: var(--spectral-cyan);
+}
+
+/* ============================================
+   ANIMAÇÕES OTIMIZADAS (SEM LAG)
+   ============================================ */
+
+@keyframes demonic-portal {
+  0% {
+    transform: scale(1) rotate(0deg);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1.05) rotate(180deg);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1) rotate(360deg);
+    opacity: 0.3;
+  }
+}
+
+@keyframes hellfire-pulse {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.4), 0 0 30px rgba(204, 0, 0, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.6), 0 0 60px rgba(204, 0, 0, 0.3);
+  }
+}
+
+@keyframes data-stream {
+  0% {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100vh);
+    opacity: 0;
+  }
+}
+
+@keyframes void-breathe {
+  0%, 100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.1);
+  }
+}
+
+@keyframes spectral-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+@keyframes cyber-scan {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 100% 100%;
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+  }
+  50% {
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 0 0 30px rgba(0, 255, 255, 0.4);
+  }
+}
+
+/* ============================================
+   BASE STYLES
+   ============================================ */
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    background-image: 
+      radial-gradient(circle at 20% 50%, rgba(255, 215, 0, 0.02) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(0, 255, 255, 0.02) 0%, transparent 50%),
+      radial-gradient(circle at 40% 20%, rgba(204, 0, 0, 0.01) 0%, transparent 50%);
+    background-attachment: fixed;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [type="button"]:not(:disabled),
+  [type="submit"]:not(:disabled),
+  [type="reset"]:not(:disabled),
+  a[href],
+  select:not(:disabled),
+  input[type="checkbox"]:not(:disabled),
+  input[type="radio"]:not(:disabled) {
+    @apply cursor-pointer;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif font-bold;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    @apply text-5xl md:text-7xl;
+    background: linear-gradient(135deg, var(--hellfire-gold) 0%, var(--spectral-cyan) 50%, var(--blood-red) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: glow-pulse 3s ease-in-out infinite;
+  }
+
+  h2 {
+    @apply text-4xl md:text-5xl;
+    color: var(--spectral-cyan);
+    text-shadow: 0 0 15px rgba(0, 255, 255, 0.5), 0 0 25px rgba(204, 0, 0, 0.2);
+  }
+
+  h3 {
+    @apply text-2xl md:text-3xl;
+    color: var(--hellfire-gold);
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+  }
+}
+
+/* ============================================
+   COMPONENT STYLES
+   ============================================ */
+
+@layer components {
+  .container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .flex {
+    min-height: 0;
+    min-width: 0;
+  }
+
+  @media (min-width: 640px) {
+    .container {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container {
+      padding-left: 2rem;
+      padding-right: 2rem;
+      max-width: 1400px;
+    }
+  }
+
+  /* Componentes Demoníacos */
+
+  .demonic-portal {
+    animation: demonic-portal 8s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  .hellfire-pulse {
+    animation: hellfire-pulse 2.5s ease-in-out infinite;
+  }
+
+  .spectral-float {
+    animation: spectral-float 4s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  .void-breathe {
+    animation: void-breathe 4s ease-in-out infinite;
+  }
+
+  .mystical-glow {
+    box-shadow: 
+      0 0 15px rgba(255, 215, 0, 0.3),
+      0 0 30px rgba(0, 255, 255, 0.2),
+      0 0 45px rgba(204, 0, 0, 0.1),
+      inset 0 0 15px rgba(255, 215, 0, 0.1);
+  }
+
+  .demonic-border {
+    border: 2px solid;
+    border-image: linear-gradient(135deg, var(--hellfire-gold) 0%, var(--spectral-cyan) 50%, var(--blood-red) 100%) 1;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+  }
+
+  .card-demonic {
+    @apply bg-card text-card-foreground rounded-none p-6;
+    border: 2px solid rgba(255, 215, 0, 0.2);
+    box-shadow: 
+      0 0 20px rgba(255, 215, 0, 0.1),
+      0 0 40px rgba(0, 255, 255, 0.05),
+      inset 0 0 15px rgba(204, 0, 0, 0.02);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .card-demonic::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.05) 0%, transparent 50%, rgba(204, 0, 0, 0.05) 100%);
+    pointer-events: none;
+  }
+
+  .button-demonic {
+    @apply px-8 py-4 font-bold transition-all duration-300 uppercase tracking-widest;
+    background: linear-gradient(135deg, var(--blood-red) 0%, var(--hellfire-gold) 100%);
+    color: var(--void-black);
+    border: 2px solid var(--spectral-cyan);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.4), inset 0 0 15px rgba(204, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+    will-change: transform;
+  }
+
+  .button-demonic::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.4s;
+  }
+
+  .button-demonic:hover::before {
+    left: 100%;
+  }
+
+  .button-demonic:hover {
+    box-shadow: 0 0 40px rgba(255, 215, 0, 0.6), 0 0 70px rgba(204, 0, 0, 0.4);
+    transform: translateY(-2px);
+  }
+
+  .button-demonic:active {
+    transform: translateY(0px);
+  }
+
+  .section-divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--spectral-cyan), var(--hellfire-gold), var(--blood-red), transparent);
+    margin: 4rem 0;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+  }
+
+  .portal-element {
+    position: relative;
+    border: 2px solid var(--spectral-cyan);
+    box-shadow: 
+      0 0 15px rgba(0, 255, 255, 0.5),
+      inset 0 0 15px rgba(0, 255, 255, 0.2),
+      0 0 30px rgba(255, 215, 0, 0.2);
+  }
+
+  .data-node {
+    @apply rounded-none;
+    border: 1px solid var(--hellfire-gold);
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.05) 0%, rgba(204, 0, 0, 0.02) 100%);
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+  }
+}
+
+/* ============================================
+   UTILITY ANIMATIONS (OTIMIZADAS)
+   ============================================ */
+
+@layer utilities {
+  .animate-demonic-portal {
+    animation: demonic-portal 8s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  .animate-hellfire-pulse {
+    animation: hellfire-pulse 2.5s ease-in-out infinite;
+  }
+
+  .animate-spectral-float {
+    animation: spectral-float 4s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  .animate-void-breathe {
+    animation: void-breathe 4s ease-in-out infinite;
+  }
+
+  .animate-glow-pulse {
+    animation: glow-pulse 3s ease-in-out infinite;
+  }
+}
