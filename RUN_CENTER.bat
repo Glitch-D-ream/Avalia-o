@@ -1,10 +1,4 @@
 @echo off
-net session >nul 2>&1
-if %errorlevel% neq 0 (
-  echo Por favor execute este script como Administrador (clique direito -> Executar como administrador).
-  pause
-  exit /b 1
-)
 REM ============================================
 REM INICIADOR DO LABORATÓRIO - WINDOWS
 REM Deve ser executado como ADMINISTRADOR

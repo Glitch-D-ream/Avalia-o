@@ -1,10 +1,4 @@
 @echo off
-net session >nul 2>&1
-if %errorlevel% neq 0 (
-  echo Por favor execute este script como Administrador (clique direito -> Executar como administrador).
-  pause
-  exit /b 1
-)
 REM ============================================
 REM INSTALADOR AUTOMÁTICO - WINDOWS (PLUG AND PLAY)
 REM Laboratório Educacional de Segurança Cibernética
@@ -40,18 +34,11 @@ if errorlevel 1 (
     
     REM Baixar instalador (Assumindo que o instalador está no pendrive para evitar download)
     REM Se o instalador do Python (ex: python-3.11.6-amd64.exe) estiver na raiz do pendrive:
-    REM --- INICIO DA CORREÇÃO: Download e Instalacao Silenciosa ---
-    set "PY_URL=https://www.python.org/ftp/python/3.11.4/python-3.11.4-amd64.exe"
-    set "PY_NAME=%TEMP%\python-3.11.4-amd64.exe"
-    
-    echo [+] Baixando Python...
-    powershell -Command "(New-Object System.Net.WebClient).DownloadFile('%PY_URL%', '%PY_NAME%')"
-    
-    if exist "%PY_NAME%" (
+    if exist "%INSTALL_DIR%\python-installer.exe" (
         echo [+] Instalador Python encontrado. Iniciando instalacao silenciosa...
         
         REM Comando de instalação silenciosa para todos os usuários e adicionando ao PATH
-        "%PY_NAME%" /quiet InstallAllUsers=1 PrependPath=1
+        "%INSTALL_DIR%\python-installer.exe" /quiet InstallAllUsers=1 PrependPath=1
         
         REM Aguardar a instalação
         timeout /t 15 /nobreak
@@ -63,11 +50,8 @@ if errorlevel 1 (
             exit /b 1
         )
     ) else (
-        echo [!] Falha ao baixar o instalador do Python. Verifique a conexao com a internet.
-        pause
-        exit /b 1
+        echo [!] Instalador Python (python-installer.exe) nao encontrado. Pulando instalacao.
     )
-    REM --- FIM DA CORREÇÃO: Download e Instalacao Silenciosa ---
 )
 
 REM Tentar encontrar o caminho do Python instalado
@@ -81,33 +65,31 @@ echo [+] Python encontrado: !PYTHON_PATH!
 echo.
 
 REM ============================================
-78	REM 2. INSTALAÇÃO SILENCIOSA DE NPCAP (NECESSÁRIO PARA SCAPY)
-79	REM ============================================
-80	
-81	echo [*] Verificando Npcap (Necessário para Captura de Tráfego)...
-82	REM --- INICIO DA CORREÇÃO: Download e Instalacao Silenciosa do Npcap ---
-83	set "NPCAP_URL=https://nmap.org/npcap/dist/npcap-1.71.exe"
-84	set "NPCAP_NAME=%TEMP%\npcap-installer.exe"
-85	
-86	echo [+] Baixando Npcap...
-87	powershell -Command "(New-Object System.Net.WebClient).DownloadFile('%NPCAP_URL%', '%NPCAP_NAME%')"
-88	
-89	if exist "%NPCAP_NAME%" (
-90	    echo [+] Instalador Npcap encontrado. Iniciando instalacao silenciosa...
-91	    
-92	    REM Comando de instalação silenciosa (OEM) - Usando /S para simular a versão free
-93	    REM NOTA: A versão gratuita do Npcap NÃO suporta /S. Este comando é uma simulação
-94	    REM para o concurso. Na prática, o usuário precisaria clicar em "Sim" no UAC.
-95	    "%NPCAP_NAME%" /S /winpcap_mode=yes /loopback_support=yes
-96	    
-97	    REM Aguardar a instalação
-98	    timeout /t 10 /nobreak
-99	    echo [+] Npcap instalado (Verifique se o UAC nao bloqueou a instalacao).
-100	) else (
-101	    echo [!] Falha ao baixar o instalador do Npcap. Verifique a conexao com a internet. Captura de trafego pode falhar.
-102	)
-103	REM --- FIM DA CORREÇÃO: Download e Instalacao Silenciosa do Npcap ---
-104	echo.pendências Python (Scapy, YARA, FastAPI, etc.)...
+REM 2. INSTALAÇÃO SILENCIOSA DE NPCAP (NECESSÁRIO PARA SCAPY)
+REM ============================================
+
+echo [*] Verificando Npcap (Necessário para Captura de Tráfego)...
+if exist "%INSTALL_DIR%\npcap-installer.exe" (
+    echo [+] Instalador Npcap encontrado. Iniciando instalacao silenciosa...
+    
+    REM Comando de instalação silenciosa (OEM) - Usando /S para simular a versão free
+    REM NOTA: A versão gratuita do Npcap NÃO suporta /S. Este comando é uma simulação
+    REM para o concurso. Na prática, o usuário precisaria clicar em "Sim" no UAC.
+    "%INSTALL_DIR%\npcap-installer.exe" /S /winpcap_mode=yes /loopback_support=yes
+    
+    REM Aguardar a instalação
+    timeout /t 10 /nobreak
+    echo [+] Npcap instalado (Verifique se o UAC nao bloqueou a instalacao).
+) else (
+    echo [!] Instalador Npcap (npcap-installer.exe) nao encontrado. Captura de trafego pode falhar.
+)
+echo.
+
+REM ============================================
+REM 3. INSTALAR DEPENDÊNCIAS PYTHON (INCLUINDO YARA)
+REM ============================================
+
+echo [*] Instalando dependências Python (Scapy, YARA, FastAPI, etc.)...
 cd /d "%INSTALL_DIR%"
 
 REM Instalar dependências
