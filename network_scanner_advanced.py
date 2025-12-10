@@ -271,7 +271,7 @@ async def main():
     print("""    ⚡ ESCANEADOR DE REDE AVANÇADO ⚡
     Integração com Nmap para Análise Profunda
     ==========================================
-    """
+    """)
     
     # Escanear dispositivos da rede
     targets = [
@@ -291,21 +291,18 @@ async def main():
         print(f"    ✓ {len(result.ports)} portas abertas")
     
     # Analisar vulnerabilidades
-    print("\n⚠️ Analisando vulnerabilidades...
-")
+    print("\n⚠️ Analisando vulnerabilidades...")
     analysis = await NetworkVulnerabilityAnalyzer.analyze_scan_results(scan_results)
     
     print(f"Total de Vulnerabilidades: {analysis['total_vulnerabilities']}")
     print(f"Críticas: {analysis['critical']}")
     print(f"Altas: {analysis['high']}")
-    print(f"Risk Score: {analysis['risk_score']}/100
-")
+    print(f"Risk Score: {analysis['risk_score']}/100")
     
     for vuln in analysis['vulnerabilities']:
         print(f"  [{vuln['severity']}] {vuln['title']}")
         print(f"    Dispositivo: {vuln['affected_device']}:{vuln['port']}")
-        print(f"    Remediação: {vuln['remediation']}
-")
+        print(f"    Remediação: {vuln['remediation']}")
 
 if __name__ == "__main__":
     import asyncio

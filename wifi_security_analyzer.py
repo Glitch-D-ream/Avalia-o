@@ -327,7 +327,7 @@ async def main():
     print("""    ⚡ ANALISADOR DE SEGURANÇA WiFi ⚡
     Simulação Ética de Ataques WPA2/WPA3
     =====================================
-    """
+    """)
     
     # Criar rede WiFi para análise
     network = WiFiNetwork(
@@ -340,20 +340,17 @@ async def main():
     )
     
     # Analisar segurança
-    print("\n📊 Analisando Segurança da Rede WiFi...
-")
+    print("\n📊 Analisando Segurança da Rede WiFi...")
     analysis = WiFiSecurityAnalyzer.analyze_network_security(network)
     print(json.dumps(analysis, indent=2, default=str))
     
     # Comparar encriptações
-    print("\n📈 Comparando Métodos de Encriptação...
-")
+    print("\n📈 Comparando Métodos de Encriptação...")
     comparison = await WiFiSecurityComparison.compare_encryption_methods()
     print(json.dumps(comparison, indent=2, default=str))
     
     # Gerar insights educacionais
-    print("\n🎓 Insights Educacionais...
-")
+    print("\n🎓 Insights Educacionais...")
     insights = EducationalWiFiInsights.generate_insights(network)
     print(json.dumps(insights, indent=2, default=str))
 

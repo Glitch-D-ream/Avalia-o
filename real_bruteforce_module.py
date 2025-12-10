@@ -183,3 +183,48 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+class PasswordStrengthAnalyzer:
+    """Analisador de Força de Senha - REAL E FUNCIONAL"""
+
+    @staticmethod
+    def calculate_strength(password: str) -> dict:
+        """Calcula a força da senha com base em critérios de segurança"""
+        
+        # Critérios de Força
+        length_score = min(len(password) / 8, 1.0) * 25
+        upper_score = min(sum(1 for char in password if char.isupper()) > 0, 1.0) * 25
+        lower_score = min(sum(1 for char in password if char.islower()) > 0, 1.0) * 25
+        digit_score = min(sum(1 for char in password if char.isdigit()) > 0, 1.0) * 25
+        symbol_score = min(sum(1 for char in password if not char.isalnum()) > 0, 1.0) * 25
+        
+        # Pontuação total (máximo 125, vamos normalizar para 100)
+        total_score = (length_score + upper_score + lower_score + digit_score + symbol_score) / 1.25
+        
+        # Classificação
+        if total_score >= 80:
+            strength = "Forte"
+            message = "Excelente! Sua senha é muito forte e segura."
+        elif total_score >= 60:
+            strength = "Média"
+            message = "Sua senha é razoavelmente forte, mas pode ser melhorada."
+        elif total_score >= 40:
+            strength = "Fraca"
+            message = "Sua senha é fraca. Considere adicionar mais caracteres e tipos de símbolos."
+        else:
+            strength = "Muito Fraca"
+            message = "Sua senha é muito fraca e fácil de ser quebrada."
+            
+        return {
+            "password": password,
+            "strength": strength,
+            "score": round(total_score, 2),
+            "message": message,
+            "details": {
+                "length": len(password),
+                "has_upper": upper_score > 0,
+                "has_lower": lower_score > 0,
+                "has_digit": digit_score > 0,
+                "has_symbol": symbol_score > 0
+            }
+        }

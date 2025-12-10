@@ -190,12 +190,11 @@ async def get_traffic_stats():
 
 # Importar o simulador de força bruta
 try:
-    from real_bruteforce_module import RealBruteForceAttack as BruteForceSimulator, BruteForceComparison, PasswordStrengthAnalyzer
+    from real_bruteforce_module import RealBruteForceModule as BruteForceSimulator, PasswordStrengthAnalyzer
     logger.info("Módulo ethical_brute_force_simulator carregado")
 except ImportError as e:
     logger.warning(f"Não foi possível carregar ethical_brute_force_simulator: {e}")
     BruteForceSimulator = None
-    BruteForceComparison = None
     PasswordStrengthAnalyzer = None
 
 # Variável global para o ataque real
@@ -279,7 +278,7 @@ async def analyze_password_strength(password: str):
 
 # Importar o módulo real de phishing
 try:
-    from real_phishing_module import RealPhishingModule
+    from real_phishing_module import PhishingHandler as RealPhishingModule
     logger.info("Módulo real_phishing_module carregado")
 except ImportError as e:
     logger.warning(f"Não foi possível carregar real_phishing_module: {e}")
@@ -297,10 +296,10 @@ async def start_phishing_attack(target_url: str):
     # O módulo real de phishing inicia um servidor HTTP para servir a página clonada
     # e capturar as credenciais.
     try:
-        phishing_module.start_attack(target_url)
+        # A chamada é feita abaixo
         
         # O módulo real de phishing deve retornar a URL do servidor falso
-        return {"status": "running", "fake_url": phishing_module.get_fake_server_url()}
+        return phishing_module.start_attack(target_url)
     except Exception as e:
         logger.error(f"Erro ao iniciar ataque de phishing: {e}")
         return {"status": "error", "message": str(e)}
