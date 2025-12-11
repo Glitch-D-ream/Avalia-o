@@ -248,7 +248,7 @@ async def start_bruteforce_attack(target_url: str, username: str, password_list:
         })
 
     # Iniciar o ataque real em background
-    asyncio.create_task(run_attack())
+    bruteforce_attack.attack_task = asyncio.create_task(run_attack())
     
     return {"status": "running", "target": target_url, "username": username}
 
@@ -260,7 +260,7 @@ async def get_bruteforce_status():
     global bruteforce_attack
     
     if bruteforce_attack:
-        return bruteforce_attack.get_attack_result()
+        return bruteforce_attack.get_status()
     
     return {"status": "idle", "message": "Nenhum ataque real em andamento."}
 

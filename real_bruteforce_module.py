@@ -38,6 +38,9 @@ class RealBruteForceModule:
         if self.proxies is None:
             self.proxies = ["socks4://177.126.89.63:4145"]
             self.proxy_pool = cycle(self.proxies)
+            
+        self.attack_task = None # Tarefa assíncrona para o ataque
+        self.found_credentials = [] # Credenciais encontradas
         
     def _get_form_details(self):
         # Este método não é mais necessário para SPA, mas mantemos para compatibilidade.
@@ -154,6 +157,16 @@ class RealBruteForceModule:
         print("\n❌ Ataque concluído. Nenhuma credencial encontrada.")
         return found_credentials
 
+    def get_status(self):
+        """Retorna o status atual do ataque de força bruta"""
+        return {
+            "status": "running" if self.attack_task and not self.attack_task.done() else "idle",
+            "target": self.target_url,
+            "username_field": self.username_field,
+            "password_field": self.password_field,
+            "found_credentials": self.found_credentials
+        }
+    
 def main():
     """Função principal"""
     import argparse
