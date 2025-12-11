@@ -312,6 +312,18 @@ async def get_phishing_status():
     
     return phishing_module.get_status()
 
+@app.post("/api/phishing/stop")
+async def stop_phishing_attack():
+    """Para o ataque de phishing real"""
+    if not phishing_module:
+        return {"status": "error", "message": "Módulo de phishing real não carregado."}
+    
+    try:
+        return phishing_module.stop_attack()
+    except Exception as e:
+        logger.error(f"Erro ao parar ataque de phishing: {e}")
+        return {"status": "error", "message": str(e)}
+
 # ============================================================================
 # MÓDULO 4: INTEGRAÇÃO COM OWASP ZAP REAL (NÍVEL AVANÇADO)
 # ============================================================================

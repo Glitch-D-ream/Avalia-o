@@ -52,7 +52,29 @@ const ControlPanel = ({ onCommand }) => {
   );
 };
 
+// Componente para o Painel de Status do Alvo
+const TargetStatus = ({ device }) => (
+  <div className="target-status-card">
+    <div className="card-header">
+      <span className="card-title">ALVO: {device.name}</span>
+      <span className={`status-dot ${device.status}`}></span>
+    </div>
+    <div className="card-body">
+      <p><strong>IP:</strong> {device.ip}</p>
+      <p><strong>Tipo:</strong> {device.type}</p>
+      <p><strong>Último Check-in:</strong> {device.lastCheckin}</p>
+    </div>
+  </div>
+);
+
 function App() {
+  const [device, setDevice] = useState({
+    ip: '192.168.1.50',
+    name: 'Celular-Vítima-04',
+    type: 'Android',
+    status: 'offline',
+    lastCheckin: 'N/A'
+  });
   const [logs, setLogs] = useState([]);
   const ws = useRef(null);
 
@@ -62,31 +84,32 @@ function App() {
     setLogs(prevLogs => [...prevLogs, { type, time, message }]);
   };
 
+  // Lógica do WebSocket temporariamente desativada para estabilizar o frontend
   useEffect(() => {
     addLog('Iniciando conexão com o servidor C2...', 'info');
-    const wsUrl = `ws://${window.location.host}/ws`;
-    ws.current = new WebSocket(wsUrl);
+    // const wsUrl = `${window.location.protocol === 'https:' ? 'wss' : 'ws'}://${window.location.host}/ws`;
+    // ws.current = new WebSocket(wsUrl);
 
-    ws.current.onopen = () => {
-      addLog('✅ Conexão WebSocket estabelecida.', 'success');
-    };
+    // ws.current.onopen = () => {
+    //   addLog('✅ Conexão WebSocket estabelecida.', 'success');
+    // };
 
-    ws.current.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      addLog(`[${data.type}] ${JSON.stringify(data.data)}`, 'warning');
-    };
+    // ws.current.onmessage = (event) => {
+    //   const data = JSON.parse(event.data);
+    //   addLog(`[${data.type}] ${JSON.stringify(data.data)}`, 'warning');
+    // };
 
-    ws.current.onclose = () => {
-      addLog('❌ Conexão WebSocket fechada.', 'error');
-    };
+    // ws.current.onclose = () => {
+    //   addLog('❌ Conexão WebSocket fechada.', 'error');
+    // };
 
-    ws.current.onerror = (error) => {
-      addLog(`❌ Erro no WebSocket: ${error.message}`, 'error');
-    };
+    // ws.current.onerror = (error) => {
+    //   addLog(`❌ Erro no WebSocket: ${error.message}`, 'error');
+    // };
 
-    return () => {
-      ws.current.close();
-    };
+    // return () => {
+    //   ws.current.close();
+    // };
   }, []);
 
   const handleCommand = async (command, params) => {
@@ -129,6 +152,7 @@ function App() {
       </header>
       <main className="rpg-main">
         <div className="rpg-sidebar">
+          <TargetStatus device={device} />
           <ControlPanel onCommand={handleCommand} />
         </div>
         <div className="rpg-content">
