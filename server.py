@@ -57,26 +57,13 @@ except ImportError as e:
     MobileCommandExecutor = None
     MobileCommand = None
 
-# Definir o diretório de arquivos estáticos (Frontend Build)
-STATIC_DIR = Path(__file__).parent / "dist" / "public"
-
-# Verificar se o diretório estático existe
-if not STATIC_DIR.is_dir():
-    logger.error(f"Diretório estático não encontrado: {STATIC_DIR}. O frontend não será servido.")
-    # Criar um placeholder para evitar erros
-    STATIC_DIR.mkdir(exist_ok=True)
-    (STATIC_DIR / "index.html").write_text("<h1>Frontend Build Não Encontrado. Execute 'npm run build' e tente novamente.</h1>")
-
 # Configurar FastAPI
 app = FastAPI(title="ASCENSÃO - CULTIVO DIGITAL API", version="v15.0")
 
-# Servir arquivos estáticos (Frontend)
-app.mount("/assets", StaticFiles(directory=STATIC_DIR / "assets"), name="static_assets")
-
-# Rota para servir o index.html (página principal)
+# Rota de saúde simples
 @app.get("/")
-async def serve_frontend():
-    return FileResponse(STATIC_DIR / "index.html", media_type="text/html")
+async def serve_health_check():
+    return {"message": "Backend está rodando. Frontend não está montado."}
 
 # Configurar CORS
 app.add_middleware(
@@ -541,6 +528,49 @@ async def run_harvester_scan(domain: str, sources: str = "all"):
     # Enviar os resultados via WebSocket
     await manager.broadcast({
         "type": "harvester_result",
+        "data": results
+    })
+    
+    return results
+
+# ============================================================================
+# MÓDULO 8: EXPLORAÇÃO AVANÇADA (Metasploit RPC)
+# ============================================================================
+
+# Importar o módulo Metasploit
+try:
+    from metasploit_module import metasploit_exploit
+    logger.info("Módulo Metasploit carregado")
+except ImportError as e:
+    logger.warning(f"Não foi possível carregar Metasploit: {e}")
+    metasploit_exploit = None
+
+@app.post("/api/metasploit/connect")
+async def connect_metasploit():
+    """Tenta conectar ao serviço msfrpcd."""
+    if not metasploit_exploit:
+        return {"status": "error", "message": "Módulo Metasploit não carregado."}
+    
+    if metasploit_exploit.connect():
+        return {"status": "success", "message": "Conexão com Metasploit RPC estabelecida."}
+    else:
+        return {"status": "error", "message": "Falha ao conectar ao Metasploit RPC. Verifique se o msfrpcd está rodando."}
+
+@app.post("/api/metasploit/run_auxiliary")
+async def run_metasploit_auxiliary(module_name: str, target_host: str, target_port: int, options: dict = None):
+    """Inicia um módulo auxiliar do Metasploit (e.g., scanner)."""
+    
+    if not metasploit_exploit:
+        return {"status": "error", "message": "Módulo Metasploit não carregado."}
+    
+    logger.info(f"Iniciando módulo Metasploit {module_name} contra: {target_host}:{target_port}")
+    
+    # Executar o módulo
+    results = metasploit_exploit.run_auxiliary_module(module_name, target_host, target_port, options)
+    
+    # Enviar os resultados via WebSocket
+    await manager.broadcast({
+        "type": "metasploit_result",
         "data": results
     })
     
