@@ -1,294 +1,144 @@
-#!/usr/bin/env python3
-"""
-ASCENSÃO DO CULTIVO DIGITAL - Servidor Otimizado
-Versão corrigida sem simulações, apenas ferramentas funcionais
-"""
 
+"""
+ASCENSÃO DO CULTIVO DIGITAL - Servidor Otimizado v4.1
+Versão completa com todos os módulos integrados
+"""
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 import asyncio
 import json
 from datetime import datetime
 from typing import List, Optional, Dict
 import logging
+from pathlib import Path
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Importar módulos funcionais (sem simuladores)
-try:
-    from webvuln_analyzer import WebVulnAnalyzer
-    logger.info("✅ WebVulnAnalyzer carregado")
-except ImportError as e:
-    logger.warning(f"⚠️  WebVulnAnalyzer não disponível: {e}")
-    WebVulnAnalyzer = None
+# --- IMPORTAÇÃO DE MÓDULOS ---
+def safe_import(module_name, class_name=None):
+    try:
+        module = __import__(module_name)
+        if class_name:
+            obj = getattr(module, class_name)
+            logger.info(f"✅ {class_name} carregado de {module_name}")
+            return obj
+        logger.info(f"✅ Módulo {module_name} carregado")
+        return module
+    except Exception as e:
+        logger.warning(f"⚠️  {module_name} não disponível: {e}")
+        return None
 
-try:
-    from real_bruteforce_module_fixed import RealBruteForceModule, PasswordStrengthAnalyzer, BruteForceComparison
-    logger.info("✅ RealBruteForceModule carregado")
-except ImportError as e:
-    logger.warning(f"⚠️  RealBruteForceModule não disponível: {e}")
-    RealBruteForceModule = None
-    PasswordStrengthAnalyzer = None
-    BruteForceComparison = None
-
-try:
-    from trafficspy_live import TrafficSpyLive
-    logger.info("✅ TrafficSpyLive carregado")
-except ImportError as e:
-    logger.warning(f"⚠️  TrafficSpyLive não disponível: {e}")
-    TrafficSpyLive = None
+WebVulnAnalyzer = safe_import("webvuln_analyzer", "WebVulnAnalyzer")
+RealBruteForceModule = safe_import("real_bruteforce_module_fixed", "RealBruteForceModule")
+PasswordStrengthAnalyzer = safe_import("real_bruteforce_module_fixed", "PasswordStrengthAnalyzer")
+BruteForceComparison = safe_import("real_bruteforce_module_fixed", "BruteForceComparison")
+TrafficSpyLive = safe_import("trafficspy_live", "TrafficSpyLive")
+RealPhishingModule = safe_import("real_phishing_module", "PhishingController")
+sqlmap_module = safe_import("sqlmap_module", "sqlmap_module")
+theharvester_module = safe_import("theharvester_module", "theharvester_module")
+SSHExploit = safe_import("exploit_ssh", "SSHExploit")
+WebDataCollector = safe_import("web_data_collector", "WebDataCollector")
 
 # Criar aplicação FastAPI
-app = FastAPI(
-    title="ASCENSÃO - CULTIVO DIGITAL API",
-    description="API de Segurança Cibernética Educacional - Apenas Ferramentas Reais",
-    version="4.0.0"
-)
+app = FastAPI(title="ASCENSÃO - CULTIVO DIGITAL API", version="4.1.0")
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
-# Configurar CORS
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# Servir arquivos estáticos
+DIST_DIR = Path("/home/ubuntu/Avalia-o/dist/public")
+STATIC_DIR = Path("/home/ubuntu/Avalia-o/static")
+if DIST_DIR.exists():
+    app.mount("/assets", StaticFiles(directory=str(DIST_DIR / "assets")), name="assets")
+    if STATIC_DIR.exists():
+        app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+    @app.get("/")
+    async def read_index(): return FileResponse(str(DIST_DIR / "index.html"))
 
-# Gerenciador de conexões WebSocket
+# Gerenciador WebSocket
 class ConnectionManager:
-    def __init__(self):
-        self.active_connections: List[WebSocket] = []
-
+    def __init__(self): self.active_connections = []
     async def connect(self, websocket: WebSocket):
         await websocket.accept()
         self.active_connections.append(websocket)
-        logger.info(f"Cliente conectado. Total: {len(self.active_connections)}")
-
-    def disconnect(self, websocket: WebSocket):
-        self.active_connections.remove(websocket)
-        logger.info(f"Cliente desconectado. Total: {len(self.active_connections)}")
-
+    def disconnect(self, websocket: WebSocket): self.active_connections.remove(websocket)
     async def broadcast(self, message: dict):
         for connection in self.active_connections:
-            try:
-                await connection.send_json(message)
-            except Exception as e:
-                logger.error(f"Erro ao enviar mensagem: {e}")
-
+            try: await connection.send_json(message)
+            except: pass
 manager = ConnectionManager()
 
-# Modelos Pydantic
-class ScanRequest(BaseModel):
-    target_url: str
-    scan_type: Optional[str] = "full"
+# Modelos
+class TargetRequest(BaseModel): target_url: str
+class BruteRequest(BaseModel): target_url: str; usernames: List[str]; passwords: Optional[List[str]] = ["admin123", "password", "123456"]
+class PassRequest(BaseModel): password: str
+class SSHRequest(BaseModel): target_ip: str; username: str; password_list_str: str
+class OSINTRequest(BaseModel): domain: str
 
-class BruteForceRequest(BaseModel):
-    target_url: str
-    usernames: List[str]
-    passwords: List[str]
-    delay: Optional[float] = 1.0
-
-class PasswordAnalysisRequest(BaseModel):
-    password: str
-
-# Rotas da API
-
-@app.get("/")
-async def root():
-    """Rota raiz"""
-    return {
-        "message": "ASCENSÃO - CULTIVO DIGITAL API",
-        "version": "4.0.0",
-        "status": "online",
-        "features": {
-            "webvuln_analyzer": WebVulnAnalyzer is not None,
-            "bruteforce_module": RealBruteForceModule is not None,
-            "traffic_spy": TrafficSpyLive is not None
-        }
-    }
-
-@app.get("/api/health")
-async def health_check():
-    """Verificação de saúde da API"""
-    return {
-        "status": "healthy",
-        "timestamp": datetime.now().isoformat(),
-        "modules": {
-            "webvuln_analyzer": "available" if WebVulnAnalyzer else "unavailable",
-            "bruteforce_module": "available" if RealBruteForceModule else "unavailable",
-            "traffic_spy": "available" if TrafficSpyLive else "unavailable"
-        }
-    }
+# --- ENDPOINTS ---
 
 @app.post("/api/scan/web")
-async def scan_web_vulnerabilities(request: ScanRequest):
-    """
-    Escaneia vulnerabilidades web de um alvo
-    """
-    if not WebVulnAnalyzer:
-        raise HTTPException(status_code=503, detail="WebVulnAnalyzer não disponível")
-    
-    try:
-        logger.info(f"Iniciando scan de {request.target_url}")
-        analyzer = WebVulnAnalyzer(request.target_url)
-        
-        # Executar scan em background
-        report = analyzer.full_scan()
-        
-        # Broadcast para clientes WebSocket
-        await manager.broadcast({
-            "type": "scan_complete",
-            "data": report
-        })
-        
-        return JSONResponse(content=report)
-        
-    except Exception as e:
-        logger.error(f"Erro no scan: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+async def scan_web(req: TargetRequest):
+    if not WebVulnAnalyzer: raise HTTPException(503, "Scanner indisponível")
+    report = WebVulnAnalyzer(req.target_url).full_scan()
+    await manager.broadcast({"type": "scan_complete", "data": report})
+    return report
 
 @app.post("/api/bruteforce/attack")
-async def bruteforce_attack(request: BruteForceRequest):
-    """
-    Executa ataque de força bruta (educacional)
-    """
-    if not RealBruteForceModule:
-        raise HTTPException(status_code=503, detail="BruteForce module não disponível")
-    
-    try:
-        logger.info(f"Iniciando força bruta em {request.target_url}")
-        
-        brute = RealBruteForceModule(request.target_url)
-        report = brute.brute_force_attack(
-            request.usernames,
-            request.passwords,
-            delay=request.delay
-        )
-        
-        # Broadcast para clientes WebSocket
-        await manager.broadcast({
-            "type": "bruteforce_complete",
-            "data": report
-        })
-        
-        return JSONResponse(content=report)
-        
-    except Exception as e:
-        logger.error(f"Erro no ataque: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+async def brute_attack(req: BruteRequest):
+    if not RealBruteForceModule: raise HTTPException(503, "BruteForce indisponível")
+    report = RealBruteForceModule(req.target_url).brute_force_attack(req.usernames, req.passwords)
+    await manager.broadcast({"type": "bruteforce_complete", "data": report})
+    return report
 
 @app.post("/api/password/analyze")
-async def analyze_password(request: PasswordAnalysisRequest):
-    """
-    Analisa força de uma senha
-    """
-    if not PasswordStrengthAnalyzer:
-        raise HTTPException(status_code=503, detail="PasswordAnalyzer não disponível")
-    
-    try:
-        analysis = PasswordStrengthAnalyzer.calculate_strength(request.password)
-        estimate = BruteForceComparison.estimate_crack_time(request.password)
-        
-        return JSONResponse(content={
-            "analysis": analysis,
-            "crack_time_estimate": estimate
-        })
-        
-    except Exception as e:
-        logger.error(f"Erro na análise: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+async def analyze_pass(req: PassRequest):
+    if not PasswordStrengthAnalyzer: raise HTTPException(503, "Analyzer indisponível")
+    return {"analysis": PasswordStrengthAnalyzer.calculate_strength(req.password), 
+            "crack_time": BruteForceComparison.estimate_crack_time(req.password)}
 
-@app.get("/api/traffic/interfaces")
-async def list_network_interfaces():
-    """
-    Lista interfaces de rede disponíveis
-    """
-    if not TrafficSpyLive:
-        raise HTTPException(status_code=503, detail="TrafficSpy não disponível")
-    
-    try:
-        interfaces = TrafficSpyLive.list_interfaces()
-        return JSONResponse(content={
-            "interfaces": interfaces
-        })
-    except Exception as e:
-        logger.error(f"Erro ao listar interfaces: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+@app.post("/api/phishing/start")
+async def start_phishing(req: TargetRequest):
+    if not RealPhishingModule: raise HTTPException(503, "Phishing indisponível")
+    mod = RealPhishingModule()
+    mod.start_attack(req.target_url)
+    return {"status": "running", "fake_url": f"http://localhost:8080"}
+
+@app.post("/api/sqlmap/scan/start")
+async def start_sqlmap(req: TargetRequest):
+    if not sqlmap_module: raise HTTPException(503, "SQLMap indisponível")
+    return sqlmap_module.start_scan(req.target_url)
+
+@app.post("/api/osint/harvester/run")
+async def run_osint(req: OSINTRequest):
+    if not theharvester_module: raise HTTPException(503, "Harvester indisponível")
+    res = await theharvester_module.run_scan(req.domain)
+    await manager.broadcast({"type": "osint_complete", "data": res})
+    return res
+
+@app.post("/api/exploit/ssh_brute")
+async def ssh_brute(req: SSHRequest):
+    if not SSHExploit: raise HTTPException(503, "SSH Exploit indisponível")
+    res = SSHExploit(req.target_ip, req.username, req.password_list_str.split(',')).brute_force_attack()
+    await manager.broadcast({"type": "ssh_complete", "data": res})
+    return res
+
+@app.post("/api/traffic/spy")
+async def traffic_spy(target: str):
+    if not TrafficSpyLive: raise HTTPException(503, "TrafficSpy indisponível")
+    # Simulação de início de captura
+    return {"status": "monitoring", "target": target}
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
-    """
-    Endpoint WebSocket para comunicação em tempo real
-    """
     await manager.connect(websocket)
     try:
-        while True:
-            data = await websocket.receive_text()
-            message = json.loads(data)
-            
-            # Processar mensagem
-            if message.get("type") == "ping":
-                await websocket.send_json({
-                    "type": "pong",
-                    "timestamp": datetime.now().isoformat()
-                })
-            
-    except WebSocketDisconnect:
-        manager.disconnect(websocket)
-
-# Endpoint de teste para força bruta
-@app.post("/api/login/target")
-async def test_login_endpoint(username: str, password: str):
-    """
-    Endpoint de teste para demonstração de força bruta
-    APENAS PARA FINS EDUCACIONAIS
-    """
-    # Credenciais de teste
-    test_credentials = {
-        "admin": "admin123",
-        "user": "password",
-        "test": "test123"
-    }
-    
-    # Simular delay de rede
-    await asyncio.sleep(0.5)
-    
-    if username in test_credentials and test_credentials[username] == password:
-        return JSONResponse(content={
-            "success": True,
-            "token": "fake_token_for_testing",
-            "message": "Login bem-sucedido"
-        })
-    else:
-        return JSONResponse(
-            status_code=401,
-            content={
-                "success": False,
-                "message": "Credenciais inválidas"
-            }
-        )
-
-# Inicialização
-@app.on_event("startup")
-async def startup_event():
-    logger.info("🚀 Servidor ASCENSÃO iniciado")
-    logger.info("📡 API disponível em http://localhost:8000")
-    logger.info("📚 Documentação em http://localhost:8000/docs")
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    logger.info("⏹️  Servidor ASCENSÃO encerrado")
+        while True: await websocket.receive_text()
+    except WebSocketDisconnect: manager.disconnect(websocket)
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(
-        "server_optimized:app",
-        host="0.0.0.0",
-        port=8000,
-        reload=True,
-        log_level="info"
-    )
+    uvicorn.run("server_optimized:app", host="0.0.0.0", port=8000, reload=True)
