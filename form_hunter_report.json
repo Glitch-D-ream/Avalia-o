@@ -1,0 +1,51 @@
+{
+  "target": "https://99jogo66.com/?id=211995351",
+  "timestamp": "2026-01-01T23:37:48.324664",
+  "static_forms": [],
+  "dynamic_forms": [],
+  "js_files": [
+    {
+      "content": "!function(e,t){if(\"function\"==typeof define&&define.amd)define(\"CGFrameStorageProxy\",[\"exports\"],t);else if(\"undefined\"!=typeof exports)t(exports);else{var r={exports:{}};t(r.exports),e.CGFrameStorageProxy=r.exports}}(\"undefined\"!=typeof globalThis?globalThis:\"undefined\"!=typeof self?self:this,(function(e){\"use strict\";Object.defineProperty(e,\"__esModule\",{value:!0}),e.frameProxyInit=function(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{},r=e.storageType,n=void 0===r?\"localSto",
+      "type": "inline"
+    },
+    {
+      "content": "!function(){for(var t=JSON.stringify({accessRestrictedContentMerge:'<p style=\"font-size: 20px;\"><img style=\"max-width: 100%;\" src=\"https://ODF2YmR2LTEwMTgwLXBwcA==@60251976-c31a-47c3-9ece-69c0a1f5ac53.czMuc2EtZWFzdC0xLmFtYXpvbmF3cy5jb20=@60251976-c31a-47c3-9ece-69c0a1f5ac53/siteadmin/upload/img/1991214784047370242.png\">&nbsp;</p>\\r\\n<p style=\"text-align: center;\"><span style=\"color: #ffffff;\"><strong><span style=\"font-size: 32px;\">Acesso limitado<br><br></span></strong></span></p>\\r\\n<p style=\"l",
+      "type": "inline"
+    },
+    {
+      "content": "!function(){var e=document.documentElement.getAttribute(\"data-template-type\");(\"lobby\"===e||\"lobby-pc\"===e)&&window.LOBBY_SITE_CONFIG&&1===window.LOBBY_SITE_CONFIG.clientType&&function(){var e=navigator.userAgent,t=/Android|webOS|iPhone|iPad|iPod|BlackBerry|Mobile|Windows Phone/i.test(e),i=window.location.pathname,o=new URL(window.location.href),n=new URLSearchParams(o.search),a=\"__device_redirect\",r=n.get(a),c=0===i.indexOf(\"/pc\");if(t||c||\"mobile\"===r){if(t&&c&&\"pc\"!==r){n.delete(a),n.set(a,\"p",
+      "type": "inline"
+    },
+    {
+      "content": "!function(){var e=location.href.includes(\"fixed.iswebclip=2\")||location.href.includes(\"webClipData=\"),t=location.href.includes(\"fixed.iswebclip=1\")||e,i=window.innerHeight,o=window.innerWidth,n=window.self!==window.top;window.LOBBY_UTILS={loadStats(){if(location.href.indexOf(\"mock.stats=true\")>-1){var e=document.createElement(\"script\");e.type=\"text/javascript\",e.src=\"/libs/stats@0.0.3/index.js\",document.head.appendChild(e)}},preventZoom(){var e=0;document.addEventListener(\"touchstart\",(function(",
+      "type": "inline"
+    },
+    {
+      "content": "!function(){var e=\"__ensure-entry-retry\",t=parseInt(sessionStorage.getItem(e)||\"0\",10);import(\"/assets/theme-0/index.BXXpOXUQ.js\").then((function(){sessionStorage.removeItem(e)})).catch((function(o){t<3?(sessionStorage.setItem(e,t+1),location.reload()):(console.error(\"Module load failed after 3 retries:\",o),sessionStorage.removeItem(e))}))}()",
+      "type": "inline"
+    },
+    {
+      "content": "import.meta.url,import(\"_\").catch((()=>1)),async function*(){}().next(),window.__vite_is_modern_browser=!0",
+      "type": "inline"
+    },
+    {
+      "content": "window.__vite_is_modern_browser||(console.warn(\"legacy-mode-guide: setup legacy guide, syntax error above and the same error below should be ignored\"),window.location.href=\"/pages/browser/index.html?from=\"+encodeURIComponent(window.location.href))",
+      "type": "inline"
+    },
+    {
+      "content": "var skeletonContentBg=document.querySelector(\".skeleton-screen-main\").getAttribute(\"data-theme-color\");window.addEventListener(\"beforeunload\",(function(){LOBBY_UTILS.updateThemeColor(skeletonContentBg)})),LOBBY_UTILS.updateThemeColor(skeletonContentBg)",
+      "type": "inline"
+    },
+    {
+      "content": "!function(){var e=document,t=e.createElement(\"script\");if(!(\"noModule\"in t)&&\"onbeforeload\"in t){var n=!1;e.addEventListener(\"beforeload\",(function(e){if(e.target===t)n=!0;else if(!e.target.hasAttribute(\"nomodule\")||!n)return;e.preventDefault()}),!0),t.type=\"module\",t.src=\".\",e.head.appendChild(t),t.remove()}}()",
+      "type": "inline"
+    },
+    {
+      "content": "window.location.href=\"/pages/browser/index.html?from=\"+encodeURIComponent(window.location.href)",
+      "type": "inline"
+    }
+  ],
+  "api_endpoints": [],
+  "validation_rules": [],
+  "total_forms": 0
+}
