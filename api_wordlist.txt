@@ -1,0 +1,10 @@
+v1/login
+v1/auth
+v1/user
+v1/admin
+v2/login
+api/login
+api/auth
+auth/login
+signin
+login
