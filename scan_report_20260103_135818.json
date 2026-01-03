@@ -1,0 +1,73 @@
+{
+  "target": "https://99jogo66.com/",
+  "timestamp": "2026-01-03T13:58:16.982480",
+  "vulnerabilities": [
+    {
+      "type": "Missing Security Header",
+      "severity": "MEDIUM",
+      "header": "X-Frame-Options",
+      "description": "Header de segurança X-Frame-Options não encontrado"
+    },
+    {
+      "type": "Missing Security Header",
+      "severity": "MEDIUM",
+      "header": "X-Content-Type-Options",
+      "description": "Header de segurança X-Content-Type-Options não encontrado"
+    },
+    {
+      "type": "Missing Security Header",
+      "severity": "MEDIUM",
+      "header": "Strict-Transport-Security",
+      "description": "Header de segurança Strict-Transport-Security não encontrado"
+    },
+    {
+      "type": "Missing Security Header",
+      "severity": "MEDIUM",
+      "header": "Content-Security-Policy",
+      "description": "Header de segurança Content-Security-Policy não encontrado"
+    },
+    {
+      "type": "Missing Security Header",
+      "severity": "MEDIUM",
+      "header": "X-XSS-Protection",
+      "description": "Header de segurança X-XSS-Protection não encontrado"
+    },
+    {
+      "type": "Missing Security Header",
+      "severity": "MEDIUM",
+      "header": "Referrer-Policy",
+      "description": "Header de segurança Referrer-Policy não encontrado"
+    },
+    {
+      "type": "Information Disclosure",
+      "severity": "LOW",
+      "description": "Server header exposto: AmazonS3"
+    }
+  ],
+  "security_headers": {
+    "X-Frame-Options": "AUSENTE",
+    "X-Content-Type-Options": "AUSENTE",
+    "Strict-Transport-Security": "AUSENTE",
+    "Content-Security-Policy": "AUSENTE",
+    "X-XSS-Protection": "AUSENTE",
+    "Referrer-Policy": "AUSENTE"
+  },
+  "forms": [],
+  "cookies": {},
+  "ssl_info": {
+    "https": true,
+    "note": "Verificação SSL básica realizada"
+  },
+  "http_methods": [
+    "GET",
+    "OPTIONS"
+  ],
+  "technologies": {
+    "server": "AmazonS3",
+    "powered_by": "Unknown",
+    "frameworks": [
+      "Vue.js"
+    ]
+  },
+  "total_vulnerabilities": 7
+}

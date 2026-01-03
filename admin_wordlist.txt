@@ -1,0 +1,14 @@
+admin
+administrator
+manage
+manager
+control
+panel
+dashboard
+api/v1/admin
+api/v1/manage
+hall/api/gohal/admin
+hall/api/gohal/manage
+hall/api/gohal/config
+hall/api/gohal/debug
+hall/api/gohal/root
