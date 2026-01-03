@@ -1,0 +1,11 @@
+index.html
+manifest.json
+asset-manifest.json
+robots.txt
+.env
+.git/config
+config.js
+settings.js
+api/v1
+admin
+login
