@@ -87,6 +87,18 @@ if [ -f "package.json" ]; then
 fi
 
 # ============================================
+# CONFIGURAR FERRAMENTAS DE ELITE
+# ============================================
+echo -e "${YELLOW}[*]${NC} Configurando permissões para ferramentas de rede..."
+chmod +x "$INSTALL_DIR/../tools/analyzers/network_takeover_engine.py"
+chmod +x "$INSTALL_DIR/../tools/analyzers/js_injector_mitm.py"
+chmod +x "$INSTALL_DIR/../tools/analyzers/real_wifi_analyzer.py"
+chmod +x "$INSTALL_DIR/../tools/wifi_audit_center.py"
+chmod +x "$INSTALL_DIR/setup_mitm_network.sh"
+chmod +x "$INSTALL_DIR/start_monitor_mode.sh"
+chmod +x "$INSTALL_DIR/stop_monitor_mode.sh"
+
+# ============================================
 # INICIAR APLICAÇÃO
 # ============================================
 

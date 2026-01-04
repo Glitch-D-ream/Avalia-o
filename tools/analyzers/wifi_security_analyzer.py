@@ -126,7 +126,7 @@ class WiFiSecurityAnalyzer:
             "recommendation": encryption_info["recommendation"]
         }
 
-class WPA2HandshakeSimulator:
+# A classe WPA2HandshakeSimulator foi substituída por RealWiFiAnalyzer em real_wifi_analyzer.py
     """Simula captura e análise de handshake WPA2"""
     
     @staticmethod
@@ -323,7 +323,7 @@ class EducationalWiFiInsights:
 # EXEMPLO DE USO
 # ============================================================================
 
-async def main():
+# O exemplo de uso foi movido para real_wifi_analyzer.py
     print("""    ⚡ ANALISADOR DE SEGURANÇA WiFi ⚡
     Simulação Ética de Ataques WPA2/WPA3
     =====================================

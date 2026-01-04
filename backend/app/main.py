@@ -46,6 +46,9 @@ sqlmap_module = safe_import("tools.scanners.sqlmap_module", "sqlmap_module")
 theharvester_module = safe_import("tools.scanners.theharvester_module", "theharvester_module")
 SSHExploit = safe_import("tools.exploits.exploit_ssh", "SSHExploit")
 WebDataCollector = safe_import("tools.scanners.web_data_collector", "WebDataCollector")
+NetworkTakeover = safe_import("tools.analyzers.network_takeover_engine", "NetworkTakeover")
+WiFiSecurityAuditor = safe_import("tools.analyzers.real_wifi_analyzer", "WiFiSecurityAuditor")
+WiFiTrafficSniffer = safe_import("tools.analyzers.wifi_traffic_sniffer", "WiFiTrafficSniffer")
 
 # Criar aplicação FastAPI
 app = FastAPI(title="ASCENSÃO - CULTIVO DIGITAL API", version="4.1.0")
@@ -82,6 +85,8 @@ class BruteRequest(BaseModel): target_url: str; usernames: List[str]; passwords:
 class PassRequest(BaseModel): password: str
 class SSHRequest(BaseModel): target_ip: str; username: str; password_list_str: str
 class OSINTRequest(BaseModel): domain: str
+class WiFiAuditRequest(BaseModel): interface: str; ssid: Optional[str] = None; password: Optional[str] = None
+class TakeoverRequest(BaseModel): interface: str; gateway_ip: str; target_ip: Optional[str] = None
 
 # --- ENDPOINTS ---
 
@@ -136,6 +141,31 @@ async def traffic_spy(target: str):
     if not TrafficSpyLive: raise HTTPException(503, "TrafficSpy indisponível")
     # Simulação de início de captura
     return {"status": "monitoring", "target": target}
+
+@app.post("/api/wifi/audit/start")
+async def start_wifi_audit(req: WiFiAuditRequest):
+    if not WiFiSecurityAuditor: raise HTTPException(503, "Auditor Wi-Fi indisponível")
+    auditor = WiFiSecurityAuditor(req.interface)
+    # Executar em background para não bloquear a API
+    asyncio.create_task(auditor.perform_full_audit())
+    return {"status": "audit_started", "interface": req.interface}
+
+@app.post("/api/wifi/takeover/start")
+async def start_network_takeover(req: TakeoverRequest):
+    if not NetworkTakeover: raise HTTPException(503, "Takeover Engine indisponível")
+    engine = NetworkTakeover(req.interface, req.gateway_ip, req.target_ip)
+    # Executar em background
+    threading_thread = threading.Thread(target=engine.run_takeover)
+    threading_thread.start()
+    return {"status": "takeover_active", "gateway": req.gateway_ip}
+
+@app.post("/api/wifi/sniff/start")
+async def start_wifi_sniff(req: WiFiAuditRequest):
+    if not WiFiTrafficSniffer: raise HTTPException(503, "Sniffer Wi-Fi indisponível")
+    sniffer = WiFiTrafficSniffer(req.interface, req.ssid, req.password)
+    # Executar em background
+    asyncio.create_task(asyncio.to_thread(sniffer.start_sniffing))
+    return {"status": "sniffing_started", "ssid": req.ssid}
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
