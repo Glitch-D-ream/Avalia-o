@@ -37,6 +37,8 @@ def safe_import(module_path, class_name=None):
 
 # Importações atualizadas para a nova estrutura modular
 WebVulnAnalyzer = safe_import("tools.scanners.webvuln_analyzer", "WebVulnAnalyzer")
+NucleiModule = safe_import("tools.scanners.nuclei_module", "NucleiModule")
+AdvancedIPBypass = safe_import("tools.scanners.advanced_ip_bypass", "AdvancedIPBypass")
 RealBruteForceModule = safe_import("tools.exploits.bruteforce", "RealBruteForceModule")
 PasswordStrengthAnalyzer = safe_import("tools.exploits.bruteforce", "PasswordStrengthAnalyzer")
 BruteForceComparison = safe_import("tools.exploits.bruteforce", "BruteForceComparison")
@@ -93,7 +95,26 @@ class TakeoverRequest(BaseModel): interface: str; gateway_ip: str; target_ip: Op
 @app.post("/api/scan/web")
 async def scan_web(req: TargetRequest):
     if not WebVulnAnalyzer: raise HTTPException(503, "Scanner indisponível")
+    
+    # Tentar bypass de IP antes do scan
+    headers = {}
+    if AdvancedIPBypass:
+        bypass = AdvancedIPBypass(req.target_url)
+        success, bypass_headers = bypass.test_bypass()
+        if success:
+            headers = bypass_headers
+            logger.info(f"🚀 Bypass de IP aplicado com sucesso para {req.target_url}")
+
+    # Executar scan principal
     report = WebVulnAnalyzer(req.target_url).full_scan()
+    
+    # Integrar Nuclei se disponível
+    if NucleiModule:
+        logger.info(f"🔍 Iniciando Nuclei Scan complementar...")
+        nuclei_results = NucleiModule(req.target_url).run_scan()
+        report["nuclei_vulnerabilities"] = nuclei_results
+        report["vulnerabilities_count"] += len(nuclei_results)
+
     await manager.broadcast({"type": "scan_complete", "data": report})
     return report
 

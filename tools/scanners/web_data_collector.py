@@ -57,7 +57,8 @@ class WebDataCollector:
 
 def main():
     """Função principal para teste"""
-    target_url = "https://example.com"
+    import sys
+    target_url = sys.argv[1] if len(sys.argv) > 1 else "https://example.com"
     
     collector = WebDataCollector()
     results = collector.collect_data(target_url)
