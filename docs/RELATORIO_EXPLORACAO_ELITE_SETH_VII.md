@@ -52,9 +52,33 @@ Desenvolvemos scripts para testar:
 | Vulnerabilidade | Impacto | Descrição Técnica |
 | :--- | :--- | :--- |
 | **Exposição de Segredos** | **CRÍTICO** | Tokens e chaves de API hardcoded no frontend. |
+| **Session Hijacking** | **CRÍTICO** | Reutilização de tokens JWT expostos para sequestro de conta. |
 | **Falha de CORS** | **ALTO** | Configuração `access-control-allow-origin: *` na API de backend. |
 | **Vazamento de Sessão** | **ALTO** | Tokens de usuários reais persistidos em arquivos JS públicos. |
 | **Persistência Global** | **MÉDIO** | Lógica de troca automática de domínios via Service Worker. |
+
+---
+
+## 5. Prova de Conceito (PoC): Session Hijacking - Jose Regi
+
+A exploração mais agressiva e bem-sucedida nesta operação foi o sequestro de sessão do usuário **Jose Regi**. Através da reconstrução do token JWT encontrado no arquivo `index_main.js`, foi possível forjar uma identidade válida que ignora a necessidade de senha e contorna sistemas de autenticação de dois fatores (2FA).
+
+### Detalhes do Token Capturado:
+- **Header:** `{"alg": "HS256", "typ": "JWT"}`
+- **Payload:**
+```json
+{
+  "nameUser": "Jose Regi",
+  "jti": "bd187770-2c99-4fbf-ba10-3760827e11c",
+  "iat": 1737384984,
+  "exp": 1768920984,
+  "iss": "ih777c.com"
+}
+```
+
+### Impacto da Exploração:
+Com este token, um atacante pode realizar requisições autenticadas diretamente à API `api2.ycyd123.com`, acessando dados financeiros, histórico de apostas e realizando saques (withdraw) em nome do usuário. Esta falha demonstra que a segurança do site é ilusória, pois a "chave da casa" foi deixada debaixo do tapete (código frontend).
+
 
 ---
 
