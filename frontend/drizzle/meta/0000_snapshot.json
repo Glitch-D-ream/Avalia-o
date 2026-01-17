@@ -1,0 +1,999 @@
+{
+  "id": "00000000-0000-0000-0000-000000000000",
+  "prevId": "",
+  "version": "5",
+  "dialect": "mysql",
+  "tables": {
+    "contact_messages": {
+      "name": "contact_messages",
+      "columns": {
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "autoincrement": false,
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "autoincrement": false,
+          "name": "email",
+          "type": "varchar(320)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "subject": {
+          "autoincrement": false,
+          "name": "subject",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "message": {
+          "autoincrement": false,
+          "name": "message",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "default": "'unread'",
+          "autoincrement": false,
+          "name": "status",
+          "type": "enum('unread','read','replied')",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "createdAt": {
+          "default": "'CURRENT_TIMESTAMP'",
+          "autoincrement": false,
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "dynamic_links": {
+      "name": "dynamic_links",
+      "columns": {
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "autoincrement": false,
+          "name": "user_id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "key": {
+          "autoincrement": false,
+          "name": "key",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "label": {
+          "autoincrement": false,
+          "name": "label",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "url": {
+          "autoincrement": false,
+          "name": "url",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "icon": {
+          "autoincrement": false,
+          "name": "icon",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "location": {
+          "autoincrement": false,
+          "name": "location",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "is_active": {
+          "default": 1,
+          "autoincrement": false,
+          "name": "is_active",
+          "type": "tinyint(1)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "createdAt": {
+          "default": "'CURRENT_TIMESTAMP'",
+          "autoincrement": false,
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updatedAt": {
+          "default": "(CURRENT_TIMESTAMP)",
+          "autoincrement": false,
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "onUpdate": true
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {
+        "key": {
+          "name": "key",
+          "columns": [
+            "key"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "schedule_events": {
+      "name": "schedule_events",
+      "columns": {
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "autoincrement": false,
+          "name": "user_id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "day_of_week": {
+          "autoincrement": false,
+          "name": "day_of_week",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "title": {
+          "autoincrement": false,
+          "name": "title",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "autoincrement": false,
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "image_url": {
+          "autoincrement": false,
+          "name": "image_url",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "start_time": {
+          "autoincrement": false,
+          "name": "start_time",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "end_time": {
+          "autoincrement": false,
+          "name": "end_time",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "is_active": {
+          "default": 1,
+          "autoincrement": false,
+          "name": "is_active",
+          "type": "tinyint(1)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "createdAt": {
+          "default": "'CURRENT_TIMESTAMP'",
+          "autoincrement": false,
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updatedAt": {
+          "default": "(CURRENT_TIMESTAMP)",
+          "autoincrement": false,
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "onUpdate": true
+        },
+        "vod_url": {
+          "autoincrement": false,
+          "name": "vod_url",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "display_order": {
+          "default": 0,
+          "autoincrement": false,
+          "name": "display_order",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "sponsorship_categories": {
+      "name": "sponsorship_categories",
+      "columns": {
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "autoincrement": false,
+          "name": "user_id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "autoincrement": false,
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "autoincrement": false,
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "display_order": {
+          "default": 0,
+          "autoincrement": false,
+          "name": "display_order",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "is_active": {
+          "default": 1,
+          "autoincrement": false,
+          "name": "is_active",
+          "type": "tinyint(1)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "createdAt": {
+          "default": "'CURRENT_TIMESTAMP'",
+          "autoincrement": false,
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updatedAt": {
+          "default": "(CURRENT_TIMESTAMP)",
+          "autoincrement": false,
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "onUpdate": true
+        },
+        "vod_url": {
+          "autoincrement": false,
+          "name": "vod_url",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "sponsorship_pricing": {
+      "name": "sponsorship_pricing",
+      "columns": {
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "autoincrement": false,
+          "name": "user_id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "content_type": {
+          "autoincrement": false,
+          "name": "content_type",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "price": {
+          "autoincrement": false,
+          "name": "price",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "autoincrement": false,
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "is_active": {
+          "default": 1,
+          "autoincrement": false,
+          "name": "is_active",
+          "type": "tinyint(1)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "createdAt": {
+          "default": "'CURRENT_TIMESTAMP'",
+          "autoincrement": false,
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updatedAt": {
+          "default": "(CURRENT_TIMESTAMP)",
+          "autoincrement": false,
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "onUpdate": true
+        },
+        "display_order": {
+          "default": 0,
+          "autoincrement": false,
+          "name": "display_order",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "vod_url": {
+          "autoincrement": false,
+          "name": "vod_url",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "sponsorships": {
+      "name": "sponsorships",
+      "columns": {
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "autoincrement": false,
+          "name": "user_id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "category_id": {
+          "autoincrement": false,
+          "name": "category_id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "title": {
+          "autoincrement": false,
+          "name": "title",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "autoincrement": false,
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "image_url": {
+          "autoincrement": false,
+          "name": "image_url",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "external_url": {
+          "autoincrement": false,
+          "name": "external_url",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "display_order": {
+          "default": 0,
+          "autoincrement": false,
+          "name": "display_order",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "is_active": {
+          "default": 1,
+          "autoincrement": false,
+          "name": "is_active",
+          "type": "tinyint(1)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "createdAt": {
+          "default": "'CURRENT_TIMESTAMP'",
+          "autoincrement": false,
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updatedAt": {
+          "default": "(CURRENT_TIMESTAMP)",
+          "autoincrement": false,
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "onUpdate": true
+        },
+        "vod_url": {
+          "autoincrement": false,
+          "name": "vod_url",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "streamer_profile": {
+      "name": "streamer_profile",
+      "columns": {
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "autoincrement": false,
+          "name": "user_id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "twitch_username": {
+          "autoincrement": false,
+          "name": "twitch_username",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "twitch_user_id": {
+          "autoincrement": false,
+          "name": "twitch_user_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "biography": {
+          "autoincrement": false,
+          "name": "biography",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "youtube_url": {
+          "autoincrement": false,
+          "name": "youtube_url",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "twitch_url": {
+          "autoincrement": false,
+          "name": "twitch_url",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "profile_image_url": {
+          "autoincrement": false,
+          "name": "profile_image_url",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createdAt": {
+          "default": "'CURRENT_TIMESTAMP'",
+          "autoincrement": false,
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updatedAt": {
+          "default": "(CURRENT_TIMESTAMP)",
+          "autoincrement": false,
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "onUpdate": true
+        },
+        "display_order": {
+          "default": 0,
+          "autoincrement": false,
+          "name": "display_order",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "vod_url": {
+          "autoincrement": false,
+          "name": "vod_url",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "is_active": {
+          "default": 1,
+          "autoincrement": false,
+          "name": "is_active",
+          "type": "tinyint(1)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "users": {
+      "name": "users",
+      "columns": {
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "openId": {
+          "autoincrement": false,
+          "name": "openId",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "autoincrement": false,
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "email": {
+          "autoincrement": false,
+          "name": "email",
+          "type": "varchar(320)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "loginMethod": {
+          "autoincrement": false,
+          "name": "loginMethod",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "role": {
+          "default": "'user'",
+          "autoincrement": false,
+          "name": "role",
+          "type": "enum('user','admin')",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "createdAt": {
+          "default": "'CURRENT_TIMESTAMP'",
+          "autoincrement": false,
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updatedAt": {
+          "default": "(CURRENT_TIMESTAMP)",
+          "autoincrement": false,
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "onUpdate": true
+        },
+        "lastSignedIn": {
+          "default": "'CURRENT_TIMESTAMP'",
+          "autoincrement": false,
+          "name": "lastSignedIn",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "vods": {
+      "name": "vods",
+      "columns": {
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "autoincrement": false,
+          "name": "user_id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "title": {
+          "autoincrement": false,
+          "name": "title",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "autoincrement": false,
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "video_url": {
+          "autoincrement": false,
+          "name": "video_url",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "thumbnail_url": {
+          "autoincrement": false,
+          "name": "thumbnail_url",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "platform": {
+          "default": "'youtube'",
+          "autoincrement": false,
+          "name": "platform",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "duration": {
+          "autoincrement": false,
+          "name": "duration",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "is_active": {
+          "default": 1,
+          "autoincrement": false,
+          "name": "is_active",
+          "type": "tinyint(1)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "createdAt": {
+          "default": "'CURRENT_TIMESTAMP'",
+          "autoincrement": false,
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updatedAt": {
+          "default": "(CURRENT_TIMESTAMP)",
+          "autoincrement": false,
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "onUpdate": true
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "watched_content": {
+      "name": "watched_content",
+      "columns": {
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "autoincrement": false,
+          "name": "user_id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "title": {
+          "autoincrement": false,
+          "name": "title",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "autoincrement": false,
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "image_url": {
+          "autoincrement": false,
+          "name": "image_url",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "external_url": {
+          "autoincrement": false,
+          "name": "external_url",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "rating": {
+          "autoincrement": false,
+          "name": "rating",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "content_type": {
+          "autoincrement": false,
+          "name": "content_type",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "display_order": {
+          "default": 0,
+          "autoincrement": false,
+          "name": "display_order",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "is_active": {
+          "default": 1,
+          "autoincrement": false,
+          "name": "is_active",
+          "type": "tinyint(1)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "createdAt": {
+          "default": "'CURRENT_TIMESTAMP'",
+          "autoincrement": false,
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updatedAt": {
+          "default": "(CURRENT_TIMESTAMP)",
+          "autoincrement": false,
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "onUpdate": true
+        },
+        "vod_url": {
+          "autoincrement": false,
+          "name": "vod_url",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "year": {
+          "autoincrement": false,
+          "name": "year",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "studio": {
+          "autoincrement": false,
+          "name": "studio",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    }
+  },
+  "views": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "tables": {
+      "dynamic_links": {
+        "columns": {
+          "updatedAt": {
+            "isDefaultAnExpression": true
+          }
+        }
+      },
+      "schedule_events": {
+        "columns": {
+          "updatedAt": {
+            "isDefaultAnExpression": true
+          }
+        }
+      },
+      "sponsorship_categories": {
+        "columns": {
+          "updatedAt": {
+            "isDefaultAnExpression": true
+          }
+        }
+      },
+      "sponsorship_pricing": {
+        "columns": {
+          "updatedAt": {
+            "isDefaultAnExpression": true
+          }
+        }
+      },
+      "sponsorships": {
+        "columns": {
+          "updatedAt": {
+            "isDefaultAnExpression": true
+          }
+        }
+      },
+      "streamer_profile": {
+        "columns": {
+          "updatedAt": {
+            "isDefaultAnExpression": true
+          }
+        }
+      },
+      "users": {
+        "columns": {
+          "updatedAt": {
+            "isDefaultAnExpression": true
+          }
+        }
+      },
+      "vods": {
+        "columns": {
+          "updatedAt": {
+            "isDefaultAnExpression": true
+          }
+        }
+      },
+      "watched_content": {
+        "columns": {
+          "updatedAt": {
+            "isDefaultAnExpression": true
+          }
+        }
+      }
+    },
+    "indexes": {}
+  }
+}
